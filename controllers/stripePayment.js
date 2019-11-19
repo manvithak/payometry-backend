@@ -1,6 +1,6 @@
 var stripe = require('stripe')('sk_test_gZYhxcQrMR9QkfyFaxw1mbmZ00yeaQPGgn');
 
-/*exports.makePayment = (req, res) => {
+exports.makePayment = (req, res) => {
 	stripe.tokens.create(
 	  {
 	    card: {
@@ -44,9 +44,9 @@ var stripe = require('stripe')('sk_test_gZYhxcQrMR9QkfyFaxw1mbmZ00yeaQPGgn');
 		  );
 	  }
 	)
-}*/
+}
 
-exports.makePayment = (req, res) => {
+/*exports.makePayment = (req, res) => {
   let amount = req.body.amount
   let card = {
     number: req.body.cardNumber,
@@ -66,4 +66,4 @@ exports.makePayment = (req, res) => {
     	data: intent.client_secret
     })
   });
-}
+}*/

@@ -3,7 +3,9 @@ const mongoose = require('mongoose')
 const questionSchema = new mongoose.Schema({
   question: { type: String, index: true },
   type: {type: String},
-  answerType: {type: String}
+  answerType: {type: String},
+  options: {type: Array},
+  placeholder: {type: String}
 }, { timestamps: true })
 
 
