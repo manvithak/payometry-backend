@@ -12,7 +12,6 @@ exports.makePayment = (req, res, next) => {
 	    },
 	  },
 	  function(err, token) {
-	  	console.log(err, token)
 	    if(err){
 	    	if(err.raw){
 		  		return res.send({
@@ -39,7 +38,6 @@ exports.makePayment = (req, res, next) => {
 			  },
 		  },
 		  function(err, payment) {
-		  	console.log(err, payment)
 		  	if(err){
 		  		if(err.raw){
 			  		return res.send({
