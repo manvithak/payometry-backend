@@ -40,12 +40,14 @@ exports.makePayment = (req, res, next) => {
 		  },
 		  function(err, payment) {
 		  	console.log(err, payment)
-		  	if(err.raw){
-		  		return res.send({
-		  			data: err
-		  		})
-		  	}else{
-		  		return err
+		  	if(err){
+		  		if(err.raw){
+			  		return res.send({
+			  			data: err
+			  		})
+			  	}else{
+			  		return err
+			  	}
 		  	}
 		  	return res.send({
 					data: payment
