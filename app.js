@@ -52,6 +52,7 @@ const app = express();
 mongoose.set('useCreateIndex', true);
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useUnifiedTopology', true);*/
+mongoose.set('useFindAndModify', false)
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useUnifiedTopology', true);
@@ -90,7 +91,7 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
+app.use(cors({credentials: true}));
 app.use(flash());
 /*app.use((req, res, next) => {
   if (req.path === '/api/upload') {
@@ -134,6 +135,8 @@ app.get('/questions', questionController.getQuestions);
 app.post('/save-answer', answerController.saveAnswers);
 app.post('/add-question', questionController.addQuestion);
 app.post('/make-payment', stripeController.makePayment);
+app.get('/answers', answerController.getAnswers);
+app.put('/update-answer', answerController.updateAnswers);
 /**
  * API examples routes.
  */

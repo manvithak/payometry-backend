@@ -16,3 +16,32 @@ exports.saveAnswers = (req, res) => {
 		})
 	})
 }
+
+exports.getAnswers = (req, res) => {
+	Answer.find({}, (err, answers) => {
+		if(err){
+			return err
+		}else{
+			return res.send({
+				data: answers
+			})
+		}
+	})
+}
+
+exports.updateAnswers = (req, res) => {
+	let id = req.body.id
+	let answers = req.body.answers
+	Answer.updateOne({merchantId: id},
+		{$set: { answers: answers }}
+		, (err, response) => {
+			if(err){
+				return err
+			}else{
+				console.log(response)
+				return res.send({
+					data: response
+				})
+			}
+		})
+}

@@ -1,6 +1,7 @@
 var stripe = require('stripe')('sk_test_gZYhxcQrMR9QkfyFaxw1mbmZ00yeaQPGgn');
 
-exports.makePayment = (req, res) => {
+exports.makePayment = (req, res, next) => {
+	let name = req.body.name
 	stripe.tokens.create(
 	  {
 	    card: {
@@ -13,7 +14,13 @@ exports.makePayment = (req, res) => {
 	  function(err, token) {
 	  	console.log(err, token)
 	    if(err){
-	    	return err
+	    	if(err.raw){
+		  		return res.send({
+		  			data: err
+		  		})
+		  	}else{
+		  		return err
+		  	}
 	    }
 	   stripe.charges.create({
 		    amount: req.body.amount,
@@ -21,7 +28,7 @@ exports.makePayment = (req, res) => {
 		    description: 'Example charge',
 		    source: token.id,
 		    shipping: {
-		    name: 'Jenny Rosen',
+		    name: name,
 			    address: {
 			      line1: '510 Townsend St',
 			      postal_code: '98140',
@@ -33,12 +40,15 @@ exports.makePayment = (req, res) => {
 		  },
 		  function(err, payment) {
 		  	console.log(err, payment)
-		  	if(err){
+		  	if(err.raw){
+		  		return res.send({
+		  			data: err
+		  		})
+		  	}else{
 		  		return err
 		  	}
 		  	return res.send({
-					data: 'payment successful',
-					status: 200
+					data: payment
 				})
 		  }
 		  );
