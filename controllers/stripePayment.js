@@ -2,18 +2,23 @@ var stripe = require('stripe')('sk_test_gZYhxcQrMR9QkfyFaxw1mbmZ00yeaQPGgn');
 
 exports.makePayment = (req, res, next) => {
 	let name = req.body.name
+	let merchantId = req.body.merchantId
 	stripe.tokens.create(
 	  {
 	    card: {
 	      number: req.body.cardNumber,
 	      exp_month: req.body.expireMonth,
 	      exp_year: req.body.expireYear,
-	      cvc: req.body.cvv
+	      cvc: req.body.cvv,
 	    },
 	  },
 	  function(err, token) {
 	    if(err){
 	    	if(err.raw){
+	    		err.metadata = {
+	    			merchantId: merchantId
+	    		}
+	    		console.log(err, token)
 		  		return res.send({
 		  			data: err
 		  		})
@@ -26,6 +31,9 @@ exports.makePayment = (req, res, next) => {
 		    currency: 'usd',
 		    description: 'Example charge',
 		    source: token.id,
+		    metadata: {
+			  	merchantId: merchantId
+			  },
 		    shipping: {
 		    name: name,
 			    address: {
@@ -35,11 +43,15 @@ exports.makePayment = (req, res, next) => {
 			      state: 'CA',
 			      country: 'US',
 			    }
-			  },
+			  }
 		  },
 		  function(err, payment) {
+		  	console.log(payment)
 		  	if(err){
 		  		if(err.raw){
+		  			err.metadata = {
+		    			merchantId: merchantId
+		    		}
 			  		return res.send({
 			  			data: err
 			  		})
