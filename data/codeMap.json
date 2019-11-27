@@ -1,0 +1,926 @@
+{
+  "account_already_exists": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "account_country_invalid_address": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 1,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 1
+  },
+  "account_invalid": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 1,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 1
+  },
+  "account_number_invalid": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "alipay_upgrade_required": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "amount_too_large": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 1,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 1
+  },
+  "amount_too_small": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 1,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 1
+  },
+  "api_key_expired": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 1,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 1
+  },
+  "authentication_required": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 1,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 1
+  },
+  "balance_insufficient": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 4,
+    "minimum_days_between": 4,
+    "maximum_days_between": 8,
+    "maximum_days_to_final_disposition": 32
+  },
+  "bank_account_declined": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "bank_account_exists": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "bank_account_unusable": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "bank_account_unverified": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 1,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 1
+  },
+  "bank_account_verification_failed": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "bitcoin_upgrade_required": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "card_declined": {
+    "response_code_status": "TBD",
+    "max_recycle_attempts": "TBD",
+    "minimum_days_between": "TBD",
+    "maximum_days_between": "TBD",
+    "maximum_days_to_final_disposition": "TBD"
+  },
+  "charge_already_captured": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "charge_already_refunded": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "charge_disputed": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "charge_exceeds_source_limit": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 6,
+    "minimum_days_between": 4,
+    "maximum_days_between": 8,
+    "maximum_days_to_final_disposition": 48
+  },
+  "charge_expired_for_capture": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 3,
+    "minimum_days_between": 3,
+    "maximum_days_between": 4,
+    "maximum_days_to_final_disposition": 12
+  },
+  "charge_invalid_parameter": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 1,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 1
+  },
+  "country_unsupported": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "coupon_expired": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "customer_max_subscriptions": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 1,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 1
+  },
+  "email_invalid": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 2
+  },
+  "expired_card": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 7,
+    "minimum_days_between": 3,
+    "maximum_days_between": 6,
+    "maximum_days_to_final_disposition": 21
+  },
+  "idempotency_key_in_use": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "incorrect_address": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 2
+  },
+  "incorrect_cvc": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 0,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 1
+  },
+  "incorrect_number": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 1,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 1
+  },
+  "incorrect_zip": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 0,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 1
+  },
+  "instant_payouts_unsupported": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 2
+  },
+  "invalid_card_type": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "invalid_charge_amount": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 1,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 1
+  },
+  "invalid_cvc": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 0,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 1
+  },
+  "invalid_expiry_month": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "invalid_expiry_year": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 0,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 1
+  },
+  "invalid_number": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 0,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 1
+  },
+  "invalid_source_usage": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "invoice_no_customer_line_items": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "invoice_no_subscription_line_items": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "invoice_not_editable": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 2
+  },
+  "invoice_payment_intent_requires_action": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 2,
+    "maximum_days_between": 2,
+    "maximum_days_to_final_disposition": 4
+  },
+  "invoice_upcoming_none": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "livemode_mismatch": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "lock_timeout": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 4,
+    "minimum_days_between": 1,
+    "maximum_days_between": 2,
+    "maximum_days_to_final_disposition": 8
+  },
+  "missingBoth": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "not_allowed_on_standard_account": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "order_creation_failed": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 1,
+    "maximum_days_between": 2,
+    "maximum_days_to_final_disposition": 4
+  },
+  "order_required_settings": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 3,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 3
+  },
+  "order_status_invalid": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "order_upstream_timeout": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 3,
+    "minimum_days_between": 1,
+    "maximum_days_between": 2,
+    "maximum_days_to_final_disposition": 6
+  },
+  "out_of_inventory": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 8,
+    "minimum_days_between": 4,
+    "maximum_days_between": 8,
+    "maximum_days_to_final_disposition": 64
+  },
+  "parameter_invalid_empty": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 2
+  },
+  "parameter_invalid_integer": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 3,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 3
+  },
+  "parameter_invalid_string_blank": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 2
+  },
+  "parameter_invalid_string_empty": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 2
+  },
+  "parameter_missing": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 2
+  },
+  "parameter_unknown": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 3,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 3
+  },
+  "parameters_exclusive": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "payment_intent_authentication_failure": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 4,
+    "minimum_days_between": 4,
+    "maximum_days_between": 6,
+    "maximum_days_to_final_disposition": 24
+  },
+  "payment_intent_incompatible_payment_method": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "payment_intent_invalid_parameter": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "payment_intent_payment_attempt_failed": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 2
+  },
+  "payment_intent_unexpected_state": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "payment_method_unactivated": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 3,
+    "minimum_days_between": 2,
+    "maximum_days_between": 2,
+    "maximum_days_to_final_disposition": 6
+  },
+  "payment_method_unexpected_state": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "payouts_not_allowed": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "platform_api_key_expired": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "postal_code_invalid": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 2
+  },
+  "processing_error": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 3,
+    "minimum_days_between": 1,
+    "maximum_days_between": 2,
+    "maximum_days_to_final_disposition": 6
+  },
+  "product_inactive": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "rate_limit": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 8,
+    "minimum_days_between": 6,
+    "maximum_days_between": 8,
+    "maximum_days_to_final_disposition": 64
+  },
+  "resource_already_exists": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "resource_missing": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "routing_number_invalid": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 2
+  },
+  "secret_key_required": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "sepa_unsupported_account": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "setup_attempt_failed": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 2
+  },
+  "setup_intent_authentication_failure": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 3,
+    "minimum_days_between": 1,
+    "maximum_days_between": 2,
+    "maximum_days_to_final_disposition": 6
+  },
+  "setup_intent_unexpected_state": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "shipping_calculation_failed": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 2
+  },
+  "sku_inactive": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 3,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 3
+  },
+  "state_unsupported": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "tax_id_invalid": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "taxes_calculation_failed": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "testmode_charges_only": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 1
+  },
+  "tls_version_unsupported": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "token_already_used": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "token_in_use": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "transfers_not_allowed": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 2
+  },
+  "upstream_order_creation_failed": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 3,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 3
+  },
+  "url_invalid": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 2
+  },
+  "approve_with_id": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 1,
+    "minimum_days_between": 1,
+    "maximum_days_between": 2,
+    "maximum_days_to_final_disposition": 2
+  },
+  "call_issuer": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 6,
+    "minimum_days_between": 4,
+    "maximum_days_between": 8,
+    "maximum_days_to_final_disposition": 48
+  },
+  "card_not_supported": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "card_velocity_exceeded": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 8,
+    "minimum_days_between": 4,
+    "maximum_days_between": 8,
+    "maximum_days_to_final_disposition": 64
+  },
+  "currency_not_supported": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "do_not_honor": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 12,
+    "minimum_days_between": 4,
+    "maximum_days_between": 8,
+    "maximum_days_to_final_disposition": 96
+  },
+  "do_not_try_again": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "duplicate_transaction": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "fraudulent": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "generic_decline": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 12,
+    "minimum_days_between": 4,
+    "maximum_days_between": 8,
+    "maximum_days_to_final_disposition": 96
+  },
+  "incorrect_pin": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 0,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 1
+  },
+  "insufficient_funds": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 12,
+    "minimum_days_between": 4,
+    "maximum_days_between": 8,
+    "maximum_days_to_final_disposition": 96
+  },
+  "invalid_account": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 2
+  },
+  "invalid_amount": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "invalid_pin": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 0,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 1
+  },
+  "issuer_not_available": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 3,
+    "minimum_days_between": 1,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 3
+  },
+  "lost_card": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "merchant_blacklist": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "new_account_information_available": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 0,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 1
+  },
+  "no_action_taken": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 6,
+    "minimum_days_between": 4,
+    "maximum_days_between": 8,
+    "maximum_days_to_final_disposition": 48
+  },
+  "not_permitted": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "offline_pin_required": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 0,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 1
+  },
+  "online_or_offline_pin_required": {
+    "response_code_status": "Exception",
+    "max_recycle_attempts": 2,
+    "minimum_days_between": 0,
+    "maximum_days_between": 1,
+    "maximum_days_to_final_disposition": 1
+  },
+  "pickup_card": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "pin_try_exceeded": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "reenter_transaction": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 4,
+    "minimum_days_between": 1,
+    "maximum_days_between": 2,
+    "maximum_days_to_final_disposition": 8
+  },
+  "restricted_card": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "revocation_of_all_authorizations": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 4,
+    "minimum_days_between": 2,
+    "maximum_days_between": 4,
+    "maximum_days_to_final_disposition": 16
+  },
+  "revocation_of_authorization": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 4,
+    "minimum_days_between": 2,
+    "maximum_days_between": 4,
+    "maximum_days_to_final_disposition": 16
+  },
+  "security_violation": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 4,
+    "minimum_days_between": 2,
+    "maximum_days_between": 4,
+    "maximum_days_to_final_disposition": 16
+  },
+  "service_not_allowed": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 4,
+    "minimum_days_between": 2,
+    "maximum_days_between": 4,
+    "maximum_days_to_final_disposition": 16
+  },
+  "stolen_card": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "stop_payment_order": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 4,
+    "minimum_days_between": 2,
+    "maximum_days_between": 4,
+    "maximum_days_to_final_disposition": 16
+  },
+  "testmode_decline": {
+    "response_code_status": "Hard Decline",
+    "max_recycle_attempts": 0,
+    "minimum_days_between": 0,
+    "maximum_days_between": 0,
+    "maximum_days_to_final_disposition": 0
+  },
+  "transaction_not_allowed": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 4,
+    "minimum_days_between": 2,
+    "maximum_days_between": 4,
+    "maximum_days_to_final_disposition": 16
+  },
+  "try_again_later": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 4,
+    "minimum_days_between": 2,
+    "maximum_days_between": 4,
+    "maximum_days_to_final_disposition": 16
+  },
+  "withdrawal_count_limit_exceeded": {
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 3,
+    "minimum_days_between": 4,
+    "maximum_days_between": 9,
+    "maximum_days_to_final_disposition": 27
+  }
+}

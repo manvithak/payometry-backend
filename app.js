@@ -19,6 +19,7 @@ const expressStatusMonitor = require('express-status-monitor');
 const sass = require('node-sass-middleware');
 const multer = require('multer');
 const cors = require('cors');
+const scheduler = require('node-schedule');
 
 const upload = multer({ dest: path.join(__dirname, 'uploads') });
 
@@ -102,7 +103,7 @@ app.use(flash());
   }
 });*/
 app.use(lusca.xframe('SAMEORIGIN'));
-app.use(lusca.xssProtection(true));
+app.use(lusca.xssProtection(false));
 app.disable('x-powered-by');
 app.use((req, res, next) => {
   res.locals.user = req.user;
@@ -137,6 +138,7 @@ app.post('/add-question', questionController.addQuestion);
 app.post('/make-payment', stripeController.makePayment);
 app.get('/answers', answerController.getAnswers);
 app.put('/update-answer', answerController.updateAnswers);
+stripeController.scheduleCron();
 /**
  * API examples routes.
  */
