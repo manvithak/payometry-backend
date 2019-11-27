@@ -4,9 +4,9 @@ exports.addQuestion = (req, res) => {
 	const questionToSave = new Question({
 	  question: req.body.question,
 	  type: req.body.type,
-  	answerType: req.body.answerType,
-  	options: req.body.options,
-  	placeholder: req.body.placeholder
+	  	answerType: req.body.answerType,
+	  	options: req.body.options,
+	  	placeholder: req.body.placeholder
 	})
 	console.log(questionToSave)
 	questionToSave.save((err, question) => {

@@ -2,7 +2,7 @@ const Card = require('../models/Card');
 
 exports.addCard = (req, res) => {
 	const card = new Card({
-		name: req.body.name,
+	  name: req.body.name,
 	  cardNumber: req.body.cardNumber,
 	  expiryMonth: req.body.expiryMonth,
 	  expiryYear: req.body.expiryYear,

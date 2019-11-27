@@ -138,6 +138,7 @@ app.post('/add-question', questionController.addQuestion);
 app.post('/make-payment', stripeController.makePayment);
 app.get('/answers', answerController.getAnswers);
 app.put('/update-answer', answerController.updateAnswers);
+app.get('/transactions', stripeController.getTransactions);
 stripeController.scheduleCron();
 /**
  * API examples routes.

@@ -7,6 +7,7 @@ const Transaction = require('../models/transaction');
 const Card = require('../models/Card');
 const reAttemptTransaction = require('../models/reattemptTransaction');
 const schedule = require('node-schedule');
+const mongoose = require('mongoose');
 
 function randomIntFromInterval(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
@@ -57,9 +58,10 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                     //check for card_expired
                     async.waterfall([
                         (cb) => {
-                            //create reartempt transaction
+                            let id = mongoose.Types.ObjectId(transactionRes._id);
+                            //create reattempt transaction merchantId: transactionRes._id,
                             const reAttemptTransactionToSave = new reAttemptTransaction({
-                                merchantId: merchantId,
+                                merchantId: id,
                                 stripeError:JSON.stringify(err),
                                 attemptCount: transactionRes.attempt
                             });
@@ -149,6 +151,56 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
 
         }
     });
+}
+
+exports.getTransactions = (req, res) => {
+    Transaction.aggregate([
+        {
+            $lookup: {
+                from: 'cards',
+                localField: 'cardId',
+                foreignField: '_id',
+                as: 'cardDetails'
+            }
+        },
+        {
+            $lookup: {
+                from: 'reattempttransactions',
+                localField: '_id',
+                foreignField: 'merchantId',
+                as: 'reAttemptDetails'
+            }
+        }
+    ],(err, response) => {
+        console.log(response)
+        if(err){
+            return err
+        }
+        res.send({
+            data: response
+        })
+    })
+    /*Transaction.find({}, (err, transactionData) => {
+        if(err){
+            return err
+        }else{
+            reTransactionIds = transactionData.map((transaction, index) => {
+                Card.find({id: transaction.card}, async(err, data) => {
+                    transaction.cardNum = data.cardNumber
+                })
+                return transaction;
+            })
+            console.log(reTransactionIds)
+            reAttemptTransaction.find({
+                'merchantId': { $in: reTransactionIds}
+            }, function(err, reAttemptData) {
+                transactionData.reApptemptData = reAttemptData;
+            });
+            res.send({
+                data: transactionData
+            })
+        }
+    })*/
 }
 
 exports.makePayment = (req, res, next) => {
@@ -291,8 +343,10 @@ const retryTransaction = (transactionId) => {
                 if (err) {
                     cb(err);
                 } else if (res) {
+                    console.log("retry1");
                     if (res.attempt <= res.maxAttemptCount) {
                         Card.findOne({"_id":res.cardId}, {}, {lean:true}, (cErr, cRes) => {
+                            console.log("retry2 ", cErr, cRes);
                             if (cErr) cb(cErr)
                             if (cRes) {
                                 let cardDetails = {};
@@ -332,7 +386,7 @@ exports.scheduleCron = () => {
                 console.log("Error while fetching transaction");
             } else if (res) {
                 async.forEachOf(res, (value, key, callback) => {
-                    if (value) {
+                    if (value && value.attempt <= value.maxAttemptCount) {
                         let rule = new schedule.RecurrenceRule();
                         rule.minute = Number(moment(value.nextAttemptDate).format("mm"));
                         rule.hour = Number(moment(value.nextAttemptDate).format("HH"));
