@@ -9,6 +9,7 @@ const transactionSchema = new mongoose.Schema({
     nextAttemptDate: {type:Date},
     nextAttemptTime: {type: Number},
     maxAttemptCount: {type: Number},
+    reschedule: {type: Boolean}
 
 }, { timestamps: true });
 

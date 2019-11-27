@@ -48,7 +48,7 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
     const amount = merchantDetails.amount;
     let dataPath = path.join(__dirname, '../data');
     dataPath  += "/codeMap.json";
-    Transaction.findOne({merchantId : merchantId}, (transactionErr, transactionRes) => {
+    Transaction.findOne({$and:[{merchantId : merchantId},{cardId:merchantDetails.cardId}]}, (transactionErr, transactionRes) => {
         if (transactionErr) return callback(err);
         if (transactionRes) {
             fs.readFile(dataPath, 'utf-8', (fsErr, fsRes) => {
@@ -88,7 +88,7 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                                 nextAttemptTime: nextAttemptDay,
                                 attempt: transactionRes.attempt ? transactionRes.attempt + 1 : 1
                             };
-                            Transaction.findOneAndUpdate({merchantId: merchantId}, {$set:dataToSet}, {upsert:true, lean: true, new: true}, (dbErr, dbRes) => {
+                            Transaction.findOneAndUpdate({$and:[{merchantId : merchantId},{cardId:merchantDetails.cardId}]}, {$set:dataToSet}, {upsert:true, lean: true, new: true}, (dbErr, dbRes) => {
                                 cb(dbErr, dbRes);
                             });
                         }
@@ -135,7 +135,7 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                                         nextAttemptDate: moment(new Date()).add(nextAttemptDay, 'minutes'),
                                         nextAttemptTime: nextAttemptDay
                                     };
-                                    Transaction.findOneAndUpdate({merchantId: merchantId}, {$set:dataToSet}, {upsert:true, lean: true, new: true}, (dbErr, dbRes) => {
+                                    Transaction.findOneAndUpdate({$and:[{merchantId: merchantId},{cardId:cardId}]}, {$set:dataToSet}, {upsert:true, lean: true, new: true}, (dbErr, dbRes) => {
                                         wcb(dbErr, dbRes);
                                     });
 
@@ -232,7 +232,8 @@ exports.makePayment = (req, res, next) => {
 
                     const merchantDetails = {
                         merchantId: merchantId,
-                        amount: req.body.amount
+                        amount: req.body.amount,
+                        cardId: req.body.cardId
                     };
                     console.log("console error :  ", err);
                     createAndUpdateTransaction(merchantDetails, err, creditCard, (terr, tres) => {
@@ -294,7 +295,8 @@ exports.makePayment = (req, res, next) => {
                             };
                             const merchantDetails = {
                                 merchantId: merchantId,
-                                amount: req.body.amount
+                                amount: req.body.amount,
+                                cardId: req.body.cardId
                             };
                             console.log("token error :  ", err);
                             createAndUpdateTransaction(merchantDetails, err, creditCard, (terr, tres) => {
@@ -357,7 +359,8 @@ const retryTransaction = (transactionId) => {
                                     cvv: cRes.cvv,
                                     amount: res.amount,
                                     merchantId: res.merchantId,
-                                    name: cRes.name
+                                    name: cRes.name,
+                                    cardId: cRes._id
                                 };
                                 cb(null, cardDetails);
                             }
@@ -372,7 +375,14 @@ const retryTransaction = (transactionId) => {
             //call stripe API for payment process
             this.makePayment(cardDetails, null, (err, res)=> {
                 console.log("after stripe payment: ", err, res);
-                cb(err, res);
+                const dataToSet = {
+                    reschedule:false
+                };
+                console.log(cardDetails.merchantId, cardDetails.cardId);
+                Transaction.findOneAndUpdate({$and:[{merchantId:cardDetails.merchantId}, {cardId:cardDetails.cardId}]}, {$set:dataToSet}, {upsert:true, new:true, lean:true}, (dbErr, dbRes) => {
+                    cb(err, res);
+                })
+
             });
         }
     ],() => {
@@ -386,16 +396,26 @@ exports.scheduleCron = () => {
                 console.log("Error while fetching transaction");
             } else if (res) {
                 async.forEachOf(res, (value, key, callback) => {
-                    if (value && value.attempt <= value.maxAttemptCount) {
-                        let rule = new schedule.RecurrenceRule();
-                        rule.minute = Number(moment(value.nextAttemptDate).format("mm"));
-                        rule.hour = Number(moment(value.nextAttemptDate).format("HH"));
-                        console.log("rule is: ", rule);
-                        let j = schedule.scheduleJob(rule, function(){
-                            const transactionId = value._id;
-                            retryTransaction(transactionId);
-                            callback();
-                        });
+                    if (value && !value.reschedule && value.attempt <= value.maxAttemptCount) {
+                        // need to update DB with boolean value
+                        const dataToSet = {
+                            reschedule:true
+                        };
+                        Transaction.findOneAndUpdate({$and:[{merchantId:value.merchantId}, {cardId:value.cardId}]}, {$set:dataToSet}, {upsert:true, new:true, lean:true}, (dbErr, dbRes) => {
+                            if (!dbErr && dbRes) {
+                                let rule = new schedule.RecurrenceRule();
+                                rule.minute = Number(moment(value.nextAttemptDate).format("mm"));
+                                rule.hour = Number(moment(value.nextAttemptDate).format("HH"));
+                                console.log("rule is: ", rule);
+                                let j = schedule.scheduleJob(rule, function(){
+                                    const transactionId = value._id;
+                                    retryTransaction(transactionId);
+                                    callback();
+                                });
+                            } else {
+                                callback();
+                            }
+                        })
                     } else {
                         callback();
                     }
