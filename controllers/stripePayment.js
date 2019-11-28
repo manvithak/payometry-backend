@@ -209,6 +209,11 @@ exports.getTransactions = (req, res) => {
                 }}
             },
             {
+                $sort: {
+                    createdAt: -1
+                }
+            },
+            {
                 $skip: skip
             },
             {

@@ -128,12 +128,12 @@
     "customer_or_system_action": "This method for creating Bitcoin payments is not supported anymore. Please upgrade your integration to use Sources instead."
   },
   "card_declined": {
-    "response_code_status": "TBD",
-    "max_recycle_attempts": "TBD",
-    "minimum_days_between": "TBD",
-    "maximum_days_between": "TBD",
-    "maximum_days_to_final_disposition": "TBD",
-    "customer_or_system_action": "Logic determined below by the appropriate declinecode provided in the API response. "
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 12,
+    "minimum_days_between": 4,
+    "maximum_days_between": 8,
+    "maximum_days_to_final_disposition": 96,
+    "customer_or_system_action": "The customer needs to contact their card issuer for more information."
   },
   "charge_already_captured": {
     "response_code_status": "Hard Decline",
