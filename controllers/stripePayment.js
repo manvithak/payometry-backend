@@ -21,7 +21,7 @@ const saveAndUpdateCard = (cardDetails, callback) => {
                 expiryMonth: cardDetails.exp_month,
                 expiryYear: cardDetails.exp_year
             };
-            Card.findOneAndUpdate({_id: res._id}, {$set:dataToSet}, {new:true, upsert:true}, (error, result) => {
+            Card.findOneAndUpdate({_id: res._id}, {$set: dataToSet}, {new: true, upsert: true}, (error, result) => {
                 callback(error, result);
             })
         } else {
@@ -42,14 +42,17 @@ const saveAndUpdateCard = (cardDetails, callback) => {
 };
 
 const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) => {
-    //console.log("update transaction error :  ", err);
+    console.log("update transaction error :  ", creditCard, merchantDetails);
     const merchantId = merchantDetails.merchantId;
     const amount = merchantDetails.amount;
     let dataPath = path.join(__dirname, '../data');
-    dataPath  += "/codeMap.json";
-    Transaction.findOne({$and:[{merchantId : merchantId},{cardId:merchantDetails.cardId},{amount:amount}]}, (transactionErr, transactionRes) => {
+    dataPath += "/codeMap.json";
+    let query = {$and: [{merchantId: merchantId}, {cardId: merchantDetails.cardId}, {amount: amount}]};
+    console.log("query is : ", query);
+    Transaction.findOne(query, (transactionErr, transactionRes) => {
         if (transactionErr) return callback(err);
-        if (transactionRes && creditCard && creditCard.cardId) {
+        if (transactionRes && merchantDetails && merchantDetails.cardId) {
+            console.log("updating transaction");
             fs.readFile(dataPath, 'utf-8', (fsErr, fsRes) => {
                 if (fsErr) return callback(fsErr)
                 if (fsRes) {
@@ -59,13 +62,13 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                         (cb) => {
                             if (transactionRes.stripeErrorCode === "expire_card" && transactionRes.stripeErrorCode !== err.raw.code) {
                                 //update card expireYear
-                                saveAndUpdateCard(creditCard, (cerr,cres) => {
+                                saveAndUpdateCard(creditCard, (cerr, cres) => {
                                     console.log("updated card error res: ", cerr, cres);
                                     cb();
                                 })
                             } else if (transactionRes.stripeErrorCode === "invalid_expiry_year" && transaction.stripeErrorCode !== err.raw.code) {
                                 //update card expireYear
-                                saveAndUpdateCard(creditCard, (cerr,cres) => {
+                                saveAndUpdateCard(creditCard, (cerr, cres) => {
                                     console.log("updated card error res: ", cerr, cres);
                                     cb();
                                 })
@@ -77,7 +80,7 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                             //create reartempt transaction
                             const reAttemptTransactionToSave = new reAttemptTransaction({
                                 merchantId: transactionRes._id,
-                                stripeError:JSON.stringify(err),
+                                stripeError: JSON.stringify(err),
                                 attemptCount: transactionRes.attempt,
                                 responseCodeStatus: fsRes[err.raw.code].response_code_status,
                                 customerOrSystemAction: fsRes[err.raw.code].customer_or_system_action
@@ -110,7 +113,11 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                                 nextAttemptTime: totalAttemptTime,
                                 attempt: transactionRes.attempt ? transactionRes.attempt + 1 : 1
                             };
-                            Transaction.findOneAndUpdate({$and:[{merchantId : merchantId},{cardId:merchantDetails.cardId}]}, {$set:dataToSet}, {upsert:true, lean: true, new: true}, (dbErr, dbRes) => {
+                            Transaction.findOneAndUpdate({$and: [{merchantId: merchantId}, {cardId: merchantDetails.cardId}]}, {$set: dataToSet}, {
+                                upsert: true,
+                                lean: true,
+                                new: true
+                            }, (dbErr, dbRes) => {
                                 cb(dbErr, dbRes);
                             });
                         }
@@ -127,49 +134,45 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                         if (cerr) {
                             wcb(cerr);
                         } else {
-                            wcb (null, cres._id);
+                            wcb(null, cres._id);
                         }
                     })
                 },
                 (cardId, wcb) => {
-                    const TransactionToSave = new Transaction({
-                        merchantId: merchantId,
-                        attempt: 1,// increase this count on the basis of number of retry attempt,
-                        cardId: cardId,
-                        amount: amount
-                    });
 
-                    TransactionToSave.save((error, result) => {
-                        if(error){
-                            wcb("ERROR_AMOUNT")
-                        } else {
-                            //call retry logic functionality
-
-                            fs.readFile(dataPath, 'utf-8', (fsErr, fsRes) => {
-                                if (fsErr) return callback(fsErr)
-                                if (fsRes) {
-                                    fsRes = JSON.parse(fsRes);
-                                    let nextAttemptDay = randomIntFromInterval(fsRes[err.raw.code].minimum_days_between, fsRes[err.raw.code].maximum_days_between);
-                                    const dataToSet = {
-                                        maxAttemptCount: fsRes[err.raw.code].max_recycle_attempts,
-                                        maximumDaysToFinalDisposition: fsRes[err.raw.code].maximum_days_to_final_disposition,
-                                        nextAttemptDate: moment(new Date()).add(nextAttemptDay, 'minutes'),
-                                        nextAttemptTime: 0,
-                                        responseCodeStatus: fsRes[err.raw.code].response_code_status,
-                                        customerOrSystemAction: fsRes[err.raw.code].customer_or_system_action,
-                                        stripeErrorCode: err.raw.code
-                                    };
-                                    Transaction.findOneAndUpdate({$and:[{merchantId: result._id},{cardId:cardId}, {amount:amount}]}, {$set:dataToSet}, {upsert:true, lean: true, new: true}, (dbErr, dbRes) => {
-                                        wcb(dbErr, dbRes);
-                                    });
-
+                    fs.readFile(dataPath, 'utf-8', (fsErr, fsRes) => {
+                        if (fsErr) return callback(fsErr)
+                        if (fsRes) {
+                            fsRes = JSON.parse(fsRes);
+                            let nextAttemptDay = randomIntFromInterval(fsRes[err.raw.code].minimum_days_between, fsRes[err.raw.code].maximum_days_between);
+                            const TransactionToSave = new Transaction({
+                                merchantId: merchantId,
+                                attempt: 1,// increase this count on the basis of number of retry attempt,
+                                cardId: cardId,
+                                amount: amount,
+                                maxAttemptCount: fsRes[err.raw.code].max_recycle_attempts,
+                                maximumDaysToFinalDisposition: fsRes[err.raw.code].maximum_days_to_final_disposition,
+                                nextAttemptDate: moment(new Date()).add(nextAttemptDay, 'minutes'),
+                                nextAttemptTime: 0,
+                                responseCodeStatus: fsRes[err.raw.code].response_code_status,
+                                customerOrSystemAction: fsRes[err.raw.code].customer_or_system_action,
+                                stripeErrorCode: err.raw.code
+                            });
+                            TransactionToSave.save((error, result) => {
+                                if (error) {
+                                    console.log("error : ", error);
+                                    wcb("ERROR_AMOUNT")
+                                } else {
+                                    wcb();
                                 }
                             })
 
                         }
                     })
+
+
                 }
-            ],(wcErr, wcRes) => {
+            ], (wcErr, wcRes) => {
                 callback(wcErr, wcRes);
             })
 
@@ -195,9 +198,9 @@ exports.getTransactions = (req, res) => {
                 as: 'reAttemptDetails'
             }
         }
-    ],(err, response) => {
+    ], (err, response) => {
         //console.log(response)
-        if(err){
+        if (err) {
             return err
         }
         res.send({
@@ -228,6 +231,7 @@ exports.getTransactions = (req, res) => {
 }
 
 exports.makePayment = (req, res, next) => {
+    console.log("request card Detaisl : ", req);
     let name = req.body.name;
     let merchantId = 'Merchant-123';
     stripe.tokens.create(
@@ -363,7 +367,11 @@ exports.makePayment = (req, res, next) => {
                             const dataToSet = {
                                 stripeSuccess: true
                             };
-                            Transaction.findOneAndUpdate({$and:[{merchantId : merchantId},{cardId:req.body.cardId}]}, {$set:dataToSet}, {upsert:true, lean: true, new: true}, (dbErr, dbRes) => {
+                            Transaction.findOneAndUpdate({$and: [{merchantId: merchantId}, {cardId: req.body.cardId}]}, {$set: dataToSet}, {
+                                upsert: true,
+                                lean: true,
+                                new: true
+                            }, (dbErr, dbRes) => {
                                 return res.send({
                                     data: payment
                                 })
@@ -388,14 +396,15 @@ const retryTransaction = (transactionId) => {
     async.waterfall([
         (cb) => {
             //get card details from transaction and amount
-            Transaction.findOne({"_id":transactionId}, {}, {lean:true}, (err, res) => {
+            Transaction.findOne({"_id": transactionId}, {}, {lean: true}, (err, res) => {
                 if (err) {
                     cb(err);
                 } else if (res) {
                     if (res.attempt <= res.maxAttemptCount) {
-                        Card.findOne({"_id":res.cardId}, {}, {lean:true}, (cErr, cRes) => {
+                        Card.findOne({"_id": res.cardId}, {}, {lean: true}, (cErr, cRes) => {
                             if (cErr) cb(cErr)
                             if (cRes) {
+                                console.log("cRes is : ", cRes);
                                 let cardDetails = {};
                                 cardDetails.body = {
                                     cardNumber: cRes.cardNumber,
@@ -439,25 +448,29 @@ const retryTransaction = (transactionId) => {
         },
         (cardDetails, cb) => {
             //call stripe API for payment process
-            this.makePayment(cardDetails, null, (err, res)=> {
-                //console.log("after stripe payment: ", err, res);
+            this.makePayment(cardDetails, null, (err, res) => {
+                console.log("after stripe payment: ", err, res);
                 const dataToSet = {
-                    reschedule:false
+                    reschedule: false
                 };
                 //console.log(cardDetails, " ; ", cardDetails);
-                Transaction.findOneAndUpdate({$and:[{merchantId:cardDetails.body.merchantId}, {cardId:cardDetails.body.cardId}]}, {$set:dataToSet}, {upsert:true, new:true, lean:true}, (dbErr, dbRes) => {
+                Transaction.findOneAndUpdate({$and: [{merchantId: cardDetails.body.merchantId}, {cardId: cardDetails.body.cardId}]}, {$set: dataToSet}, {
+                    upsert: true,
+                    new: true,
+                    lean: true
+                }, (dbErr, dbRes) => {
                     cb(err, res);
                 })
 
             });
         }
-    ],() => {
+    ], () => {
         console.log("completed");
     })
 }
 exports.scheduleCron = () => {
-    let j = schedule.scheduleJob('*/30 * * * * *', function(){
-        Transaction.find({},{},{lean:true}, (err, res) => {
+    let j = schedule.scheduleJob('*/30 * * * * *', function () {
+        Transaction.find({}, {}, {lean: true}, (err, res) => {
             if (err) {
                 console.log("Error while fetching transaction");
             } else if (res) {
@@ -465,15 +478,19 @@ exports.scheduleCron = () => {
                     if (value && !value.reschedule && value.attempt <= value.maxAttemptCount && !value.stripeSuccess) {
                         // need to update DB with boolean value
                         const dataToSet = {
-                            reschedule:true
+                            reschedule: true
                         };
-                        Transaction.findOneAndUpdate({$and:[{merchantId:value.merchantId}, {cardId:value.cardId}]}, {$set:dataToSet}, {upsert:true, new:true, lean:true}, (dbErr, dbRes) => {
+                        Transaction.findOneAndUpdate({$and: [{merchantId: value.merchantId}, {cardId: value.cardId}]}, {$set: dataToSet}, {
+                            upsert: true,
+                            new: true,
+                            lean: true
+                        }, (dbErr, dbRes) => {
                             if (!dbErr && dbRes) {
                                 let rule = new schedule.RecurrenceRule();
                                 rule.minute = Number(moment(value.nextAttemptDate).format("mm"));
                                 rule.hour = Number(moment(value.nextAttemptDate).format("HH"));
                                 console.log("rule is: ", rule);
-                                let j = schedule.scheduleJob(rule, function(){
+                                let j = schedule.scheduleJob(rule, function () {
                                     const transactionId = value._id;
                                     retryTransaction(transactionId);
                                     callback();
