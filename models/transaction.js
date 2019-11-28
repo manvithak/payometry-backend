@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const transactionSchema = new mongoose.Schema({
     merchantId: {type:String, required:true},
-    stripeSuccess: {type: String},
+    stripeSuccess: {type: Boolean},
     maximumDaysToFinalDisposition: {type: Number},
     cardId: {type:mongoose.Schema.ObjectId, ref: 'Card', required:true},
     attempt: {type: Number},
@@ -11,7 +11,8 @@ const transactionSchema = new mongoose.Schema({
     maxAttemptCount: {type: Number},
     reschedule: {type: Boolean},
     responseCodeStatus: {type: String},
-    customerOrSystemAction: {type: String}
+    customerOrSystemAction: {type: String},
+    stripeErrorCode: {type:String}
 
 }, { timestamps: true });
 
