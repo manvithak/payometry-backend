@@ -7,7 +7,6 @@ const Transaction = require('../models/transaction');
 const Card = require('../models/Card');
 const reAttemptTransaction = require('../models/reattemptTransaction');
 const schedule = require('node-schedule');
-const mongoose = require('mongoose');
 
 function randomIntFromInterval(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
@@ -48,7 +47,7 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
     const amount = merchantDetails.amount;
     let dataPath = path.join(__dirname, '../data');
     dataPath  += "/codeMap.json";
-    Transaction.findOne({merchantId : merchantId}, (transactionErr, transactionRes) => {
+    Transaction.findOne({$and:[{merchantId : merchantId},{cardId:merchantDetails.cardId}]}, (transactionErr, transactionRes) => {
         if (transactionErr) return callback(err);
         if (transactionRes) {
             fs.readFile(dataPath, 'utf-8', (fsErr, fsRes) => {
@@ -58,12 +57,13 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                     //check for card_expired
                     async.waterfall([
                         (cb) => {
-                            let id = mongoose.Types.ObjectId(transactionRes._id);
-                            //create reattempt transaction merchantId: transactionRes._id,
+                            //create reartempt transaction
                             const reAttemptTransactionToSave = new reAttemptTransaction({
-                                merchantId: id,
+                                merchantId: transactionRes._id,
                                 stripeError:JSON.stringify(err),
-                                attemptCount: transactionRes.attempt
+                                attemptCount: transactionRes.attempt,
+                                responseCodeStatus: fsRes[err.raw.code].response_code_status,
+                                customerOrSystemAction: fsRes[err.raw.code].customer_or_system_action
                             });
                             reAttemptTransactionToSave.save((reError, reRes) => {
                                 console.log("save retry : ", reError, reRes);
@@ -76,19 +76,33 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                         },
                         (cb) => {
                             //update transaction
-                            if (err.raw.code === "expired_card") {
+                            /*if (err.raw.code === "expired_card" || err.raw.code === "invalid_expiry_year") {
                                 //apply logic and update card details in case if any other error is coming.
-                            }
+                                //Upon  initial decline, resend the next authorization with a BLANK expire date.
+                                // Thereafter, attempts should increase the Expire Date Year value
+                                // (from what is currently loaded on the platform, with the following pattern: +3, +4, +2, +1, +5 & +6.
+                                // Of note, if the subsequent response codes come back with something OTHER THAN EXPIRED CARD,
+                                // then the platform should update the exire year value with the last known attempt value, as the estimate was correct
+                                // but some other issue is causing the decline.
+                            }*/
                             let nextAttemptDay = randomIntFromInterval(fsRes[err.raw.code].minimum_days_between, fsRes[err.raw.code].maximum_days_between);
+                            let totalAttemptTime = (transactionRes.nextAttemptTime ? transactionRes.nextAttemptTime : 0) + nextAttemptDay;
                             console.log("error code: ", err.raw.code, " : ", fsRes[err.raw.code].max_recycle_attempts);
+                            if (transactionRes.attempt === transactionRes.maxAttemptCount) {
+                                nextAttemptDay = transactionRes.maximumDaysToFinalDisposition - transactionRes.nextAttemptTime;
+                                //get difference between nextAttemptDay and initialAttempt
+                            } else {
+                                totalAttemptTime = (transactionRes.nextAttemptTime ? transactionRes.nextAttemptTime : 0) + nextAttemptDay;
+                            }
+
                             const dataToSet = {
                                 //maxAttemptCount: fsRes[err.raw.code].max_recycle_attempts,
                                 //maximumDaysToFinalDisposition: fsRes[err.raw.code].maximum_days_to_final_disposition,
                                 nextAttemptDate: moment(new Date()).add(nextAttemptDay, 'minutes'),
-                                nextAttemptTime: nextAttemptDay,
+                                nextAttemptTime: totalAttemptTime,
                                 attempt: transactionRes.attempt ? transactionRes.attempt + 1 : 1
                             };
-                            Transaction.findOneAndUpdate({merchantId: merchantId}, {$set:dataToSet}, {upsert:true, lean: true, new: true}, (dbErr, dbRes) => {
+                            Transaction.findOneAndUpdate({$and:[{merchantId : merchantId},{cardId:merchantDetails.cardId}]}, {$set:dataToSet}, {upsert:true, lean: true, new: true}, (dbErr, dbRes) => {
                                 cb(dbErr, dbRes);
                             });
                         }
@@ -133,9 +147,11 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                                         maxAttemptCount: fsRes[err.raw.code].max_recycle_attempts,
                                         maximumDaysToFinalDisposition: fsRes[err.raw.code].maximum_days_to_final_disposition,
                                         nextAttemptDate: moment(new Date()).add(nextAttemptDay, 'minutes'),
-                                        nextAttemptTime: nextAttemptDay
+                                        nextAttemptTime: 0,
+                                        responseCodeStatus: fsRes[err.raw.code].response_code_status,
+                                        customerOrSystemAction: fsRes[err.raw.code].customer_or_system_action
                                     };
-                                    Transaction.findOneAndUpdate({merchantId: merchantId}, {$set:dataToSet}, {upsert:true, lean: true, new: true}, (dbErr, dbRes) => {
+                                    Transaction.findOneAndUpdate({$and:[{merchantId: merchantId},{cardId:cardId}]}, {$set:dataToSet}, {upsert:true, lean: true, new: true}, (dbErr, dbRes) => {
                                         wcb(dbErr, dbRes);
                                     });
 
@@ -232,7 +248,8 @@ exports.makePayment = (req, res, next) => {
 
                     const merchantDetails = {
                         merchantId: merchantId,
-                        amount: req.body.amount
+                        amount: req.body.amount,
+                        cardId: req.body.cardId
                     };
                     console.log("console error :  ", err);
                     createAndUpdateTransaction(merchantDetails, err, creditCard, (terr, tres) => {
@@ -294,7 +311,8 @@ exports.makePayment = (req, res, next) => {
                             };
                             const merchantDetails = {
                                 merchantId: merchantId,
-                                amount: req.body.amount
+                                amount: req.body.amount,
+                                cardId: req.body.cardId
                             };
                             console.log("token error :  ", err);
                             createAndUpdateTransaction(merchantDetails, err, creditCard, (terr, tres) => {
@@ -343,10 +361,8 @@ const retryTransaction = (transactionId) => {
                 if (err) {
                     cb(err);
                 } else if (res) {
-                    console.log("retry1");
                     if (res.attempt <= res.maxAttemptCount) {
                         Card.findOne({"_id":res.cardId}, {}, {lean:true}, (cErr, cRes) => {
-                            console.log("retry2 ", cErr, cRes);
                             if (cErr) cb(cErr)
                             if (cRes) {
                                 let cardDetails = {};
@@ -357,7 +373,8 @@ const retryTransaction = (transactionId) => {
                                     cvv: cRes.cvv,
                                     amount: res.amount,
                                     merchantId: res.merchantId,
-                                    name: cRes.name
+                                    name: cRes.name,
+                                    cardId: cRes._id
                                 };
                                 cb(null, cardDetails);
                             }
@@ -372,7 +389,14 @@ const retryTransaction = (transactionId) => {
             //call stripe API for payment process
             this.makePayment(cardDetails, null, (err, res)=> {
                 console.log("after stripe payment: ", err, res);
-                cb(err, res);
+                const dataToSet = {
+                    reschedule:false
+                };
+                console.log(cardDetails, " ; ", cardDetails.body.merchantId, cardDetails.body.cardId);
+                Transaction.findOneAndUpdate({$and:[{merchantId:cardDetails.body.merchantId}, {cardId:cardDetails.body.cardId}]}, {$set:dataToSet}, {upsert:true, new:true, lean:true}, (dbErr, dbRes) => {
+                    cb(err, res);
+                })
+
             });
         }
     ],() => {
@@ -386,16 +410,26 @@ exports.scheduleCron = () => {
                 console.log("Error while fetching transaction");
             } else if (res) {
                 async.forEachOf(res, (value, key, callback) => {
-                    if (value && value.attempt <= value.maxAttemptCount) {
-                        let rule = new schedule.RecurrenceRule();
-                        rule.minute = Number(moment(value.nextAttemptDate).format("mm"));
-                        rule.hour = Number(moment(value.nextAttemptDate).format("HH"));
-                        console.log("rule is: ", rule);
-                        let j = schedule.scheduleJob(rule, function(){
-                            const transactionId = value._id;
-                            retryTransaction(transactionId);
-                            callback();
-                        });
+                    if (value && !value.reschedule && value.attempt <= value.maxAttemptCount) {
+                        // need to update DB with boolean value
+                        const dataToSet = {
+                            reschedule:true
+                        };
+                        Transaction.findOneAndUpdate({$and:[{merchantId:value.merchantId}, {cardId:value.cardId}]}, {$set:dataToSet}, {upsert:true, new:true, lean:true}, (dbErr, dbRes) => {
+                            if (!dbErr && dbRes) {
+                                let rule = new schedule.RecurrenceRule();
+                                rule.minute = Number(moment(value.nextAttemptDate).format("mm"));
+                                rule.hour = Number(moment(value.nextAttemptDate).format("HH"));
+                                console.log("rule is: ", rule);
+                                let j = schedule.scheduleJob(rule, function(){
+                                    const transactionId = value._id;
+                                    retryTransaction(transactionId);
+                                    callback();
+                                });
+                            } else {
+                                callback();
+                            }
+                        })
                     } else {
                         callback();
                     }

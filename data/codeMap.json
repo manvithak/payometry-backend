@@ -4,923 +4,1055 @@
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "Contact Customer"
   },
   "account_country_invalid_address": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 1,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1
+    "maximum_days_to_final_disposition": 1,
+    "customer_or_system_action": "Update country code to be the same as account."
   },
   "account_invalid": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 1,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1
+    "maximum_days_to_final_disposition": 1,
+    "customer_or_system_action": "Fix Account ID Header"
   },
   "account_number_invalid": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "Contact Customer"
   },
   "alipay_upgrade_required": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "N/A"
   },
   "amount_too_large": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 1,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1
+    "maximum_days_to_final_disposition": 1,
+    "customer_or_system_action": "The specified amount is greater than the maximum amount allowed. Use a lower amount and try again."
   },
   "amount_too_small": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 1,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1
+    "maximum_days_to_final_disposition": 1,
+    "customer_or_system_action": "The specified amount is less than the minimum amount allowed. Use a higher amount and try again."
   },
   "api_key_expired": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 1,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1
+    "maximum_days_to_final_disposition": 1,
+    "customer_or_system_action": "The API key provided has expired. Obtain your current API keys from the Dashboard and update your integration to use them."
   },
   "authentication_required": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 1,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1
+    "maximum_days_to_final_disposition": 1,
+    "customer_or_system_action": "The payment requires authentication to proceed. Notify your customer to return to your application and complete the payment."
   },
   "balance_insufficient": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 4,
     "minimum_days_between": 4,
     "maximum_days_between": 8,
-    "maximum_days_to_final_disposition": 32
+    "maximum_days_to_final_disposition": 32,
+    "customer_or_system_action": "The transfer or payout could not be completed because the associated account does not have a sufficient balance available. Create a new transfer or payout using an amount less than or equal to the account’s available balance."
   },
   "bank_account_declined": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The bank account provided cannot be used to charge, either because it is not verified yet or it is not supported."
   },
   "bank_account_exists": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The bank account provided already exists on the specified Customer object. If the bank account should also be attached to a different customer, include the correct customer ID when making the request again."
   },
   "bank_account_unusable": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The bank account provided cannot be used for payouts. A different bank account must be used."
   },
   "bank_account_unverified": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 1,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1
+    "maximum_days_to_final_disposition": 1,
+    "customer_or_system_action": "Your Connect platform is attempting to share an unverified bank account with a connected account."
   },
   "bank_account_verification_failed": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The bank account cannot be verified, either because the microdeposit amounts provided do not match the actual amounts, or because verification has failed too many times."
   },
   "bitcoin_upgrade_required": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "This method for creating Bitcoin payments is not supported anymore. Please upgrade your integration to use Sources instead."
   },
   "card_declined": {
     "response_code_status": "TBD",
     "max_recycle_attempts": "TBD",
     "minimum_days_between": "TBD",
     "maximum_days_between": "TBD",
-    "maximum_days_to_final_disposition": "TBD"
+    "maximum_days_to_final_disposition": "TBD",
+    "customer_or_system_action": "Logic determined below by the appropriate declinecode provided in the API response. "
   },
   "charge_already_captured": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The charge you’re attempting to capture has already been captured. Update the request with an uncaptured charge ID."
   },
   "charge_already_refunded": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The charge you’re attempting to refund has already been refunded. Update the request to use the ID of a charge that has not been refunded."
   },
   "charge_disputed": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The charge you’re attempting to refund has been charged back. Check the disputes documentation to learn how to respond to the dispute."
   },
   "charge_exceeds_source_limit": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 6,
     "minimum_days_between": 4,
     "maximum_days_between": 8,
-    "maximum_days_to_final_disposition": 48
+    "maximum_days_to_final_disposition": 48,
+    "customer_or_system_action": "This charge would cause you to exceed your rolling-window processing limit for this source type. Please retry the charge later or contact us to request a higher processing limit."
   },
   "charge_expired_for_capture": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 3,
     "minimum_days_between": 3,
     "maximum_days_between": 4,
-    "maximum_days_to_final_disposition": 12
+    "maximum_days_to_final_disposition": 12,
+    "customer_or_system_action": "The charge cannot be captured as the authorization has expired. Auth and capture charges must be captured within seven days."
   },
   "charge_invalid_parameter": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 1,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1
+    "maximum_days_to_final_disposition": 1,
+    "customer_or_system_action": "One or more provided parameters was not allowed for the given operation on the Charge. Check our API reference or the returned error message to see which values were not correct for that Charge."
   },
   "country_unsupported": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "Your platform attempted to create a custom account in a country that is not yet supported. Make sure that users can only sign up in countries supported by custom accounts."
   },
   "coupon_expired": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The coupon provided for a subscription or order has expired. Either create a new coupon or use an existing one that is valid."
   },
   "customer_max_subscriptions": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 1,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1
+    "maximum_days_to_final_disposition": 1,
+    "customer_or_system_action": "The maximum number of subscriptions for a customer has been reached. Contact us if you are receiving this error."
   },
   "email_invalid": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 2
+    "maximum_days_to_final_disposition": 2,
+    "customer_or_system_action": "The email address is invalid (e.g., not properly formatted). Check that the email address is properly formatted and only includes allowed characters."
   },
   "expired_card": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 7,
     "minimum_days_between": 3,
     "maximum_days_between": 6,
-    "maximum_days_to_final_disposition": 21
+    "maximum_days_to_final_disposition": 21,
+    "customer_or_system_action": "Upon  initial decline, resend the next authorization with a BLANK expire date. Thereafter, attempts should increase the Expire Date Year value (from what is currently loaded on the platform, with the following pattern: +3, +4, +2, +1, +5 & +6. Of note, if the subsequent response codes come back with something OTHER THAN EXPIRED CARD, then the platform should update the exire year value with the last known attempt value, as the estimate was correct but some other issue is causing the decline."
   },
   "idempotency_key_in_use": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The idempotency key provided is currently being used in another request. This occurs if your integration is making duplicate requests simultaneously."
   },
   "incorrect_address": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 2
+    "maximum_days_to_final_disposition": 2,
+    "customer_or_system_action": "The card’s address is incorrect. Check the card’s address or use a different card."
   },
   "incorrect_cvc": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 0,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1
+    "maximum_days_to_final_disposition": 1,
+    "customer_or_system_action": "The card’s security code is incorrect. Check the card’s security code or use a different card. Only for Real Time transactions, as you cannot store the card security code value."
   },
   "incorrect_number": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 1,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1
+    "maximum_days_to_final_disposition": 1,
+    "customer_or_system_action": "The card number is incorrect. Check the card’s number or use a different card."
   },
   "incorrect_zip": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 0,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1
+    "maximum_days_to_final_disposition": 1,
+    "customer_or_system_action": "The card’s ZIP code is incorrect. Check the card’s ZIP code or use a different card."
   },
   "instant_payouts_unsupported": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 2
+    "maximum_days_to_final_disposition": 2,
+    "customer_or_system_action": "This card is not eligible for Instant Payouts. Try a debit card from a supported bank."
   },
   "invalid_card_type": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The card provided as an external account is not supported for payouts. Provide a non-prepaid debit card instead."
   },
   "invalid_charge_amount": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 1,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1
+    "maximum_days_to_final_disposition": 1,
+    "customer_or_system_action": "The specified amount is invalid. The charge amount must be a positive integer in the smallest currency unit, and not exceed the minimum or maximum amount."
   },
   "invalid_cvc": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 0,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1
+    "maximum_days_to_final_disposition": 1,
+    "customer_or_system_action": "The card’s security code is invalid. Check the card’s security code or use a different card. Only for Real Time transactions, as you cannot store the card security code value."
   },
   "invalid_expiry_month": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The card’s expiration month is incorrect. Check the expiration date or use a different card."
   },
   "invalid_expiry_year": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 0,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1
+    "maximum_days_to_final_disposition": 1,
+    "customer_or_system_action": "Upon  initial decline, resend the next authorization with a BLANK expire date. Thereafter, attempts should increase the Expire Date Year value (from what is currently loaded on the platform, with the following pattern: +3, +4, +2, +1, +5 & +6. Of note, if the subsequent response codes come back with something OTHER THAN EXPIRED CARD, then the platform should update the exire year value with the last known attempt value, as the estimate was correct but some other issue is causing the decline."
   },
   "invalid_number": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 0,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1
+    "maximum_days_to_final_disposition": 1,
+    "customer_or_system_action": "The card number is invalid. Check the card details or use a different card."
   },
   "invalid_source_usage": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The source cannot be used because it is not in the correct state (e.g., a charge request is trying to use a source with a pending, failed, or consumed source). Check the status of the source you are attempting to use."
   },
   "invoice_no_customer_line_items": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "An invoice cannot be generated for the specified customer as there are no pending invoice items. Check that the correct customer is being specified or create any necessary invoice items first."
   },
   "invoice_no_subscription_line_items": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "An invoice cannot be generated for the specified subscription as there are no pending invoice items. Check that the correct subscription is being specified or create any necessary invoice items first."
   },
   "invoice_not_editable": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 2
+    "maximum_days_to_final_disposition": 2,
+    "customer_or_system_action": "The specified invoice can no longer be edited. Instead, consider creating additional invoice items that will be applied to the next invoice. You can either manually generate the next invoice or wait for it to be automatically generated at the end of the billing cycle."
   },
   "invoice_payment_intent_requires_action": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 2,
     "maximum_days_between": 2,
-    "maximum_days_to_final_disposition": 4
+    "maximum_days_to_final_disposition": 4,
+    "customer_or_system_action": "This payment requires additional user action before it can be completed successfully. Payment can be completed using the PaymentIntent associated with the invoice. See this page for more details."
   },
   "invoice_upcoming_none": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "There is no upcoming invoice on the specified customer to preview. Only customers with active subscriptions or pending invoice items have invoices that can be previewed."
   },
   "livemode_mismatch": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "Test and live mode API keys, requests, and objects are only available within the mode they are in."
   },
   "lock_timeout": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 4,
     "minimum_days_between": 1,
     "maximum_days_between": 2,
-    "maximum_days_to_final_disposition": 8
+    "maximum_days_to_final_disposition": 8,
+    "customer_or_system_action": "This object cannot be accessed right now because another API request or Stripe process is currently accessing it. If you see this error intermittently, retry the request. If you see this error frequently and are making multiple concurrent requests to a single object, make your requests serially or at a lower rate."
   },
   "missingBoth": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "A customer and source ID have been provided, but the source has not been saved to the customer. To create a charge for a customer with a specified source, you must first save the card details."
   },
   "not_allowed_on_standard_account": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "Transfers and payouts on behalf of a Standard connected account are not allowed."
   },
   "order_creation_failed": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 2,
     "minimum_days_between": 1,
     "maximum_days_between": 2,
-    "maximum_days_to_final_disposition": 4
+    "maximum_days_to_final_disposition": 4,
+    "customer_or_system_action": "The order could not be created. Check the order details and then try again."
   },
   "order_required_settings": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 3,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 3
+    "maximum_days_to_final_disposition": 3,
+    "customer_or_system_action": "The order could not be processed as it is missing required information. Check the information provided and try again."
   },
   "order_status_invalid": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The order cannot be updated because the status provided is either invalid or does not follow the order lifecycle (e.g., an order cannot transition from created to fulfilled without first transitioning to paid)."
   },
   "order_upstream_timeout": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 3,
     "minimum_days_between": 1,
     "maximum_days_between": 2,
-    "maximum_days_to_final_disposition": 6
+    "maximum_days_to_final_disposition": 6,
+    "customer_or_system_action": "The request timed out. Try again later."
   },
   "out_of_inventory": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 8,
     "minimum_days_between": 4,
     "maximum_days_between": 8,
-    "maximum_days_to_final_disposition": 64
+    "maximum_days_to_final_disposition": 64,
+    "customer_or_system_action": "The SKU is out of stock. If more stock is available, update the SKU’s inventory quantity and try again."
   },
   "parameter_invalid_empty": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 2
+    "maximum_days_to_final_disposition": 2,
+    "customer_or_system_action": "One or more required values were not provided. Make sure requests include all required parameters."
   },
   "parameter_invalid_integer": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 3,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 3
+    "maximum_days_to_final_disposition": 3,
+    "customer_or_system_action": "One or more of the parameters requires an integer, but the values provided were a different type. Make sure that only supported values are provided for each attribute. Refer to our API documentation to look up the type of data each attribute supports."
   },
   "parameter_invalid_string_blank": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 2
+    "maximum_days_to_final_disposition": 2,
+    "customer_or_system_action": "One or more values provided only included whitespace. Check the values in your request and update any that contain only whitespace."
   },
   "parameter_invalid_string_empty": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 2
+    "maximum_days_to_final_disposition": 2,
+    "customer_or_system_action": "One or more required string values is empty. Make sure that string values contain at least one character."
   },
   "parameter_missing": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 2
+    "maximum_days_to_final_disposition": 2,
+    "customer_or_system_action": "One or more required values are missing. Check our API documentation to see which values are required to create or modify the specified resource."
   },
   "parameter_unknown": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 3,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 3
+    "maximum_days_to_final_disposition": 3,
+    "customer_or_system_action": "The request contains one or more unexpected parameters. Remove these and try again."
   },
   "parameters_exclusive": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "Two or more mutually exclusive parameters were provided. Check our API documentation or the returned error message to see which values are permitted when creating or modifying the specified resource."
   },
   "payment_intent_authentication_failure": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 4,
     "minimum_days_between": 4,
     "maximum_days_between": 6,
-    "maximum_days_to_final_disposition": 24
+    "maximum_days_to_final_disposition": 24,
+    "customer_or_system_action": "The provided payment method has failed authentication. Provide a new payment method to attempt to fulfill this PaymentIntent again."
   },
   "payment_intent_incompatible_payment_method": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The PaymentIntent expected a payment method with different properties than what was provided."
   },
   "payment_intent_invalid_parameter": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "One or more provided parameters was not allowed for the given operation on the PaymentIntent. Check our API reference or the returned error message to see which values were not correct for that PaymentIntent."
   },
   "payment_intent_payment_attempt_failed": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 2
+    "maximum_days_to_final_disposition": 2,
+    "customer_or_system_action": "The latest payment attempt for the PaymentIntent has failed. Check the last_payment_error property on the PaymentIntent for more details and provide source_data or a new source to attempt to fulfill this PaymentIntent again."
   },
   "payment_intent_unexpected_state": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The PaymentIntent’s state was incompatible with the operation you were trying to perform."
   },
   "payment_method_unactivated": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 3,
     "minimum_days_between": 2,
     "maximum_days_between": 2,
-    "maximum_days_to_final_disposition": 6
+    "maximum_days_to_final_disposition": 6,
+    "customer_or_system_action": "The charge cannot be created as the payment method used has not been activated. Activate the payment method in the Dashboard, then try again."
   },
   "payment_method_unexpected_state": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The provided payment method’s state was incompatible with the operation you were trying to perform. Confirm that the payment method is in an allowed state for the given operation before attempting to perform it."
   },
   "payouts_not_allowed": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "Payouts have been disabled on the connected account. Check the connected account’s status to see if any additional information needs to be provided, or if payouts have been disabled for another reason."
   },
   "platform_api_key_expired": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The API key provided by your Connect platform has expired. This occurs if your platform has either generated a new key or the connected account has been disconnected from the platform. Obtain your current API keys from the Dashboard and update your integration or reach out to the user and reconnect the account."
   },
   "postal_code_invalid": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 2
+    "maximum_days_to_final_disposition": 2,
+    "customer_or_system_action": "The ZIP code provided was incorrect."
   },
   "processing_error": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 3,
     "minimum_days_between": 1,
     "maximum_days_between": 2,
-    "maximum_days_to_final_disposition": 6
+    "maximum_days_to_final_disposition": 6,
+    "customer_or_system_action": "An error occurred while processing the card. Check the card details are correct or use a different card."
   },
   "product_inactive": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The product this SKU belongs to is no longer available for purchase."
   },
   "rate_limit": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 8,
     "minimum_days_between": 6,
     "maximum_days_between": 8,
-    "maximum_days_to_final_disposition": 64
+    "maximum_days_to_final_disposition": 64,
+    "customer_or_system_action": "Too many requests hit the API too quickly. We recommend an exponential backoff of your requests."
   },
   "resource_already_exists": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "A resource with a user-specified ID (e.g., plan or coupon) already exists. Use a different, unique value for id and try again."
   },
   "resource_missing": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The ID provided is not valid. Either the resource does not exist, or an ID for a different resource has been provided."
   },
   "routing_number_invalid": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 2
+    "maximum_days_to_final_disposition": 2,
+    "customer_or_system_action": "The bank routing number provided is invalid."
   },
   "secret_key_required": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The API key provided is a publishable key, but a secret key is required. Obtain your current API keys from the Dashboard and update your integration to use them."
   },
   "sepa_unsupported_account": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "Your account does not support SEPA payments."
   },
   "setup_attempt_failed": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 2
+    "maximum_days_to_final_disposition": 2,
+    "customer_or_system_action": "The latest setup attempt for the SetupIntent has failed. Check the last_setup_error property on the SetupIntent for more details and provide a new payment method to attempt to set it up again."
   },
   "setup_intent_authentication_failure": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 3,
     "minimum_days_between": 1,
     "maximum_days_between": 2,
-    "maximum_days_to_final_disposition": 6
+    "maximum_days_to_final_disposition": 6,
+    "customer_or_system_action": "The provided payment method has failed authentication. Provide a new payment method to attempt to fulfill this SetupIntent again."
   },
   "setup_intent_unexpected_state": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The SetupIntent’s state was incompatible with the operation you were trying to perform."
   },
   "shipping_calculation_failed": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 2
+    "maximum_days_to_final_disposition": 2,
+    "customer_or_system_action": "Shipping calculation failed as the information provided was either incorrect or could not be verified."
   },
   "sku_inactive": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 3,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 3
+    "maximum_days_to_final_disposition": 3,
+    "customer_or_system_action": "The SKU is inactive and no longer available for purchase. Use a different SKU, or make the current SKU active again."
   },
   "state_unsupported": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "Occurs when providing the legal_entity information for a U.S. custom account, if the provided state is not supported. (This is mostly associated states and territories.)"
   },
   "tax_id_invalid": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The tax ID number provided is invalid (e.g., missing digits). Tax ID information varies from country to country but must be at least nine digits."
   },
   "taxes_calculation_failed": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "Tax calculation for the order failed."
   },
   "testmode_charges_only": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1
+    "maximum_days_to_final_disposition": 1,
+    "customer_or_system_action": "Your account has not been activated and can only make test charges. Activate your account in the Dashboard to begin processing live charges."
   },
   "tls_version_unsupported": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "Your integration is using an older version of TLS that is unsupported. You must be using TLS 1.2 or above."
   },
   "token_already_used": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The token provided has already been used. You must create a new token before you can retry this request."
   },
   "token_in_use": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The token provided is currently being used in another request. This occurs if your integration is making duplicate requests simultaneously."
   },
   "transfers_not_allowed": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 2
+    "maximum_days_to_final_disposition": 2,
+    "customer_or_system_action": "The requested transfer cannot be created. Contact us if you are receiving this error."
   },
   "upstream_order_creation_failed": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 3,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 3
+    "maximum_days_to_final_disposition": 3,
+    "customer_or_system_action": "The order could not be created. Check the order details and then try again."
   },
   "url_invalid": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 2
+    "maximum_days_to_final_disposition": 2,
+    "customer_or_system_action": "The URL provided is invalid."
   },
   "approve_with_id": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 1,
     "minimum_days_between": 1,
     "maximum_days_between": 2,
-    "maximum_days_to_final_disposition": 2
+    "maximum_days_to_final_disposition": 2,
+    "customer_or_system_action": "The customer should try again and authenticate their card when prompted during the transaction."
   },
   "call_issuer": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 6,
     "minimum_days_between": 4,
     "maximum_days_between": 8,
-    "maximum_days_to_final_disposition": 48
+    "maximum_days_to_final_disposition": 48,
+    "customer_or_system_action": "The payment should be attempted again. If it still cannot be processed, the customer needs to contact their card issuer."
   },
   "card_not_supported": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The customer needs to contact their card issuer for more information."
   },
   "card_velocity_exceeded": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 8,
     "minimum_days_between": 4,
     "maximum_days_between": 8,
-    "maximum_days_to_final_disposition": 64
+    "maximum_days_to_final_disposition": 64,
+    "customer_or_system_action": "The customer needs to contact their card issuer to make sure their card can be used to make this type of purchase."
   },
   "currency_not_supported": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The customer should contact their card issuer for more information."
   },
   "do_not_honor": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 12,
     "minimum_days_between": 4,
     "maximum_days_between": 8,
-    "maximum_days_to_final_disposition": 96
+    "maximum_days_to_final_disposition": 96,
+    "customer_or_system_action": "The customer needs to check with the issuer whether the card can be used for the type of currency specified."
   },
   "do_not_try_again": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The customer needs to contact their card issuer for more information."
   },
   "duplicate_transaction": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The customer should contact their card issuer for more information."
   },
   "fraudulent": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "Check to see if a recent payment already exists."
   },
   "generic_decline": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 12,
     "minimum_days_between": 4,
     "maximum_days_between": 8,
-    "maximum_days_to_final_disposition": 96
+    "maximum_days_to_final_disposition": 96,
+    "customer_or_system_action": "Upon  initial decline, resend the next authorization with a BLANK expire date. Thereafter, attempts should increase the Expire Date Year value (from what is currently loaded on the platform, with the following pattern: +3, +4, +2, +1, +5 & +6. Of note, if the subsequent response codes come back with something OTHER THAN EXPIRED CARD, then the platform should update the exire year value with the last known attempt value, as the estimate was correct but some other issue is causing the decline."
   },
   "incorrect_pin": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 0,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1
+    "maximum_days_to_final_disposition": 1,
+    "customer_or_system_action": "Do not report more detailed information to your customer. Instead, present as you would the generic_decline described below."
   },
   "insufficient_funds": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 12,
     "minimum_days_between": 4,
     "maximum_days_between": 8,
-    "maximum_days_to_final_disposition": 96
+    "maximum_days_to_final_disposition": 96,
+    "customer_or_system_action": "The customer needs to contact their card issuer for more information."
   },
   "invalid_account": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 2
+    "maximum_days_to_final_disposition": 2,
+    "customer_or_system_action": "The customer should try again using the correct card number."
   },
   "invalid_amount": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The customer should try again using the correct CVC."
   },
   "invalid_pin": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 0,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1
+    "maximum_days_to_final_disposition": 1,
+    "customer_or_system_action": "The customer should try again using the correct PIN."
   },
   "issuer_not_available": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 3,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 3
+    "maximum_days_to_final_disposition": 3,
+    "customer_or_system_action": "The customer should try again using the correct billing ZIP/postal code."
   },
   "lost_card": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The customer should use an alternative payment method."
   },
   "merchant_blacklist": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The customer needs to contact their card issuer to check that the card is working correctly."
   },
   "new_account_information_available": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 0,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1
+    "maximum_days_to_final_disposition": 1,
+    "customer_or_system_action": "If the amount appears to be correct, the customer needs to check with their card issuer that they can make purchases of that amount."
   },
   "no_action_taken": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 6,
     "minimum_days_between": 4,
     "maximum_days_between": 8,
-    "maximum_days_to_final_disposition": 48
+    "maximum_days_to_final_disposition": 48,
+    "customer_or_system_action": "The customer should try again using the correct CVC."
   },
   "not_permitted": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The customer should try again using the correct expiration date."
   },
   "offline_pin_required": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 0,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1
+    "maximum_days_to_final_disposition": 1,
+    "customer_or_system_action": "The customer should try again using the correct card number."
   },
   "online_or_offline_pin_required": {
     "response_code_status": "Exception",
     "max_recycle_attempts": 2,
     "minimum_days_between": 0,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1
+    "maximum_days_to_final_disposition": 1,
+    "customer_or_system_action": "The customer should try again using the correct PIN."
   },
   "pickup_card": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The payment should be attempted again. If it still cannot be processed, the customer needs to contact their card issuer."
   },
   "pin_try_exceeded": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The specific reason for the decline should not be reported to the customer. Instead, it needs to be presented as a generic decline."
   },
   "reenter_transaction": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 4,
     "minimum_days_between": 1,
     "maximum_days_between": 2,
-    "maximum_days_to_final_disposition": 8
+    "maximum_days_to_final_disposition": 8,
+    "customer_or_system_action": "Do not report more detailed information to your customer. Instead, present as you would the generic_decline described above."
   },
   "restricted_card": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The customer needs to contact their card issuer for more information."
   },
   "revocation_of_all_authorizations": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 4,
     "minimum_days_between": 2,
     "maximum_days_between": 4,
-    "maximum_days_to_final_disposition": 16
+    "maximum_days_to_final_disposition": 16,
+    "customer_or_system_action": "The customer should contact their card issuer for more information."
   },
   "revocation_of_authorization": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 4,
     "minimum_days_between": 2,
     "maximum_days_between": 4,
-    "maximum_days_to_final_disposition": 16
+    "maximum_days_to_final_disposition": 16,
+    "customer_or_system_action": "The customer needs to contact their card issuer for more information."
   },
   "security_violation": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 4,
     "minimum_days_between": 2,
     "maximum_days_between": 4,
-    "maximum_days_to_final_disposition": 16
+    "maximum_days_to_final_disposition": 16,
+    "customer_or_system_action": "The customer should try again by inserting their card and entering a PIN."
   },
   "service_not_allowed": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 4,
     "minimum_days_between": 2,
     "maximum_days_between": 4,
-    "maximum_days_to_final_disposition": 16
+    "maximum_days_to_final_disposition": 16,
+    "customer_or_system_action": "If the card reader supports Online PIN, the customer should be prompted for a PIN without a new transaction being created. If the card reader does not support Online PIN, the customer should try again by inserting their card and entering a PIN."
   },
   "stolen_card": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The customer needs to contact their card issuer for more information."
   },
   "stop_payment_order": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 4,
     "minimum_days_between": 2,
     "maximum_days_between": 4,
-    "maximum_days_to_final_disposition": 16
+    "maximum_days_to_final_disposition": 16,
+    "customer_or_system_action": "The customer must use another card or method of payment."
   },
   "testmode_decline": {
     "response_code_status": "Hard Decline",
     "max_recycle_attempts": 0,
     "minimum_days_between": 0,
     "maximum_days_between": 0,
-    "maximum_days_to_final_disposition": 0
+    "maximum_days_to_final_disposition": 0,
+    "customer_or_system_action": "The payment should be attempted again. If it still cannot be processed, try again later."
   },
   "transaction_not_allowed": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 4,
     "minimum_days_between": 2,
     "maximum_days_between": 4,
-    "maximum_days_to_final_disposition": 16
+    "maximum_days_to_final_disposition": 16,
+    "customer_or_system_action": "The payment should be attempted again. If it still cannot be processed, the customer needs to contact their card issuer."
   },
   "try_again_later": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 4,
     "minimum_days_between": 2,
     "maximum_days_between": 4,
-    "maximum_days_to_final_disposition": 16
+    "maximum_days_to_final_disposition": 16,
+    "customer_or_system_action": "The customer needs to contact their card issuer for more information."
   },
   "withdrawal_count_limit_exceeded": {
     "response_code_status": "Soft Decline",
     "max_recycle_attempts": 3,
     "minimum_days_between": 4,
     "maximum_days_between": 9,
-    "maximum_days_to_final_disposition": 27
+    "maximum_days_to_final_disposition": 27,
+    "customer_or_system_action": "The customer should contact their card issuer for more information."
   }
 }
