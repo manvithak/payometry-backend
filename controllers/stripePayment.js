@@ -133,38 +133,30 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                     })
                 },
                 (cardId, wcb) => {
-                    const TransactionToSave = new Transaction({
-                        merchantId: merchantId,
-                        attempt: 1,// increase this count on the basis of number of retry attempt,
-                        cardId: cardId,
-                        amount: amount
-                    });
-
-                    TransactionToSave.save((error, result) => {
-                        if(error){
-                            wcb(error)
-                        } else {
-                            //call retry logic functionality
-
-                            fs.readFile(dataPath, 'utf-8', (fsErr, fsRes) => {
-                                if (fsErr) return callback(fsErr)
-                                if (fsRes) {
-                                    fsRes = JSON.parse(fsRes);
-                                    console.log(fsRes)
-                                    let nextAttemptDay = randomIntFromInterval(fsRes[err.raw.code].minimum_days_between, fsRes[err.raw.code].maximum_days_between);
-                                    const dataToSet = {
-                                        maxAttemptCount: fsRes[err.raw.code].max_recycle_attempts,
-                                        maximumDaysToFinalDisposition: fsRes[err.raw.code].maximum_days_to_final_disposition,
-                                        nextAttemptDate: moment(new Date()).add(nextAttemptDay, 'minutes'),
-                                        nextAttemptTime: 0,
-                                        responseCodeStatus: fsRes[err.raw.code].response_code_status,
-                                        customerOrSystemAction: fsRes[err.raw.code].customer_or_system_action,
-                                        stripeErrorCode: err.raw.code
-                                    };
-                                    Transaction.findOneAndUpdate({$and:[{merchantId: merchantId},{cardId:cardId}]}, {$set:dataToSet}, {upsert:true, lean: true, new: true}, (dbErr, dbRes) => {
-                                        wcb(dbErr, dbRes);
-                                    });
-
+                    fs.readFile(dataPath, 'utf-8', (fsErr, fsRes) => {
+                        if (fsErr) return callback(fsErr)
+                        if (fsRes) {
+                            fsRes = JSON.parse(fsRes);
+                            let nextAttemptDay = randomIntFromInterval(fsRes[err.raw.code].minimum_days_between, fsRes[err.raw.code].maximum_days_between);
+                            const TransactionToSave = new Transaction({
+                                merchantId: merchantId,
+                                attempt: 1, // increase this count on the basis of number of retry attempt,
+                                cardId: cardId,
+                                amount: amount,
+                                maxAttemptCount: fsRes[err.raw.code].max_recycle_attempts,
+                                maximumDaysToFinalDisposition: fsRes[err.raw.code].maximum_days_to_final_disposition,
+                                nextAttemptDate: moment(new Date()).add(nextAttemptDay, 'minutes'),
+                                nextAttemptTime: 0,
+                                responseCodeStatus: fsRes[err.raw.code].response_code_status,
+                                customerOrSystemAction: fsRes[err.raw.code].customer_or_system_action,
+                                stripeErrorCode: err.raw.code
+                            });
+                            TransactionToSave.save((error, result) => {
+                                if (error) {
+                                    console.log(error)
+                                    wcb("ERROR_AMOUNT")
+                                } else {
+                                    wcb();
                                 }
                             })
 
