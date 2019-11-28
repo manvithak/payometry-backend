@@ -7,7 +7,6 @@ const Transaction = require('../models/transaction');
 const Card = require('../models/Card');
 const reAttemptTransaction = require('../models/reattemptTransaction');
 const schedule = require('node-schedule');
-const mongoose = require('mongoose');
 
 function randomIntFromInterval(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
@@ -58,10 +57,9 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                     //check for card_expired
                     async.waterfall([
                         (cb) => {
-                            let id = mongoose.Types.ObjectId(transactionRes._id);
                             //create reattempt transaction merchantId: transactionRes._id,
                             const reAttemptTransactionToSave = new reAttemptTransaction({
-                                merchantId: id,
+                                merchantId: transactionRes._id,
                                 stripeError:JSON.stringify(err),
                                 attemptCount: transactionRes.attempt
                             });

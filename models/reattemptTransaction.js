@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
 const reAttemptTransactionSchema = new mongoose.Schema({
-    merchantId: {type:String, required:true, index:true},
+    merchantId: {type:mongoose.Schema.ObjectId, ref: 'Transaction', required:true},
     stripeSuccess: {type: String},
     stripeError:{type: String},
-    merchantId: {type:String, required:true, index:true},
     attemptCount: {type:Number}
 
 }, { timestamps: true });
