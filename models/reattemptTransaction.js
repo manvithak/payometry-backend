@@ -3,7 +3,9 @@ const reAttemptTransactionSchema = new mongoose.Schema({
     merchantId: {type:mongoose.Schema.ObjectId, ref: 'Transaction', required:true},
     stripeSuccess: {type: String},
     stripeError:{type: String},
-    attemptCount: {type:Number}
+    attemptCount: {type:Number},
+    responseCodeStatus: {type:String},
+    customerOrSystemAction: {type:String}
 
 }, { timestamps: true });
 
