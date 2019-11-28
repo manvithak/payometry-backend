@@ -57,6 +57,23 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                     //check for card_expired
                     async.waterfall([
                         (cb) => {
+                            if (transactionRes.stripeErrorCode === "expire_card" && transactionRes.stripeErrorCode !== err.raw.code) {
+                                //update card expireYear
+                                saveAndUpdateCard(creditCard, (cerr,cres) => {
+                                    console.log("updated card error res: ", cerr, cres);
+                                    cb();
+                                })
+                            } else if (transactionRes.stripeErrorCode === "invalid_expiry_year" && transaction.stripeErrorCode !== err.raw.code) {
+                                //update card expireYear
+                                saveAndUpdateCard(creditCard, (cerr,cres) => {
+                                    console.log("updated card error res: ", cerr, cres);
+                                    cb();
+                                })
+                            } else {
+                                cb();
+                            }
+                        },
+                        (cb) => {
                             //create reartempt transaction
                             const reAttemptTransactionToSave = new reAttemptTransaction({
                                 merchantId: transactionRes._id,
@@ -76,15 +93,6 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                         },
                         (cb) => {
                             //update transaction
-                            /*if (err.raw.code === "expired_card" || err.raw.code === "invalid_expiry_year") {
-                                //apply logic and update card details in case if any other error is coming.
-                                //Upon  initial decline, resend the next authorization with a BLANK expire date.
-                                // Thereafter, attempts should increase the Expire Date Year value
-                                // (from what is currently loaded on the platform, with the following pattern: +3, +4, +2, +1, +5 & +6.
-                                // Of note, if the subsequent response codes come back with something OTHER THAN EXPIRED CARD,
-                                // then the platform should update the exire year value with the last known attempt value, as the estimate was correct
-                                // but some other issue is causing the decline.
-                            }*/
                             let nextAttemptDay = randomIntFromInterval(fsRes[err.raw.code].minimum_days_between, fsRes[err.raw.code].maximum_days_between);
                             let totalAttemptTime = (transactionRes.nextAttemptTime ? transactionRes.nextAttemptTime : 0) + nextAttemptDay;
                             console.log("error code: ", err.raw.code, " : ", fsRes[err.raw.code].max_recycle_attempts);
@@ -150,7 +158,8 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                                         nextAttemptDate: moment(new Date()).add(nextAttemptDay, 'minutes'),
                                         nextAttemptTime: 0,
                                         responseCodeStatus: fsRes[err.raw.code].response_code_status,
-                                        customerOrSystemAction: fsRes[err.raw.code].customer_or_system_action
+                                        customerOrSystemAction: fsRes[err.raw.code].customer_or_system_action,
+                                        stripeErrorCode: err.raw.code
                                     };
                                     Transaction.findOneAndUpdate({$and:[{merchantId: merchantId},{cardId:cardId}]}, {$set:dataToSet}, {upsert:true, lean: true, new: true}, (dbErr, dbRes) => {
                                         wcb(dbErr, dbRes);
@@ -337,9 +346,22 @@ exports.makePayment = (req, res, next) => {
                         }
                     }
                     if (res) {
-                        return res.send({
-                            data: payment
-                        })
+                        //update transaction collection
+                        if (req.body.cardId) {
+                            const dataToSet = {
+                                stripeSuccess: true
+                            };
+                            Transaction.findOneAndUpdate({$and:[{merchantId : merchantId},{cardId:req.body.cardId}]}, {$set:dataToSet}, {upsert:true, lean: true, new: true}, (dbErr, dbRes) => {
+                                return res.send({
+                                    data: payment
+                                })
+                            });
+                        } else {
+                            return res.send({
+                                data: payment
+                            })
+                        }
+
                     } else {
                         next(terr, tres);
                     }
@@ -375,6 +397,27 @@ const retryTransaction = (transactionId) => {
                                     name: cRes.name,
                                     cardId: cRes._id
                                 };
+                                if (res.stripeErrorCode === "expired_card" || res.stripeErrorCode === "invalid_expiry_year") {
+                                    console.log("inside if")
+                                    let cardExpireYear = [0, 3, 4, 2, 1, 5, 6];
+                                    for (let k in cardExpireYear) {
+                                        console.log("res attempt : ", res.attempt, " : ", k);
+                                        if ((res.attempt - 1) == k) {
+                                            cardDetails.body.expireYear = cRes.expiryYear + cardExpireYear[k];
+                                            console.log("card details year 2 : ", cardDetails.body.expireYear);
+                                            /*if (cardExpireYear[k] === 0) {
+                                                cardDetails.body.expireYear = "";
+                                                console.log("card details year 1 : ", cardDetails.body.expireYear)
+                                            } else {
+                                                cardDetails.body.expireYear = cRes.expiryYear + cardExpireYear[k];
+                                                console.log("card details year 2 : ", cardDetails.body.expireYear)
+                                            }*/
+                                        } else {
+                                            console.log("else statement")
+                                        }
+                                    }
+                                }
+                                console.log("cardDetails : ", cardDetails);
                                 cb(null, cardDetails);
                             }
                         })
@@ -391,7 +434,7 @@ const retryTransaction = (transactionId) => {
                 const dataToSet = {
                     reschedule:false
                 };
-                console.log(cardDetails, " ; ", cardDetails.body.merchantId, cardDetails.body.cardId);
+                //console.log(cardDetails, " ; ", cardDetails);
                 Transaction.findOneAndUpdate({$and:[{merchantId:cardDetails.body.merchantId}, {cardId:cardDetails.body.cardId}]}, {$set:dataToSet}, {upsert:true, new:true, lean:true}, (dbErr, dbRes) => {
                     cb(err, res);
                 })
