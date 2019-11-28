@@ -42,14 +42,14 @@ const saveAndUpdateCard = (cardDetails, callback) => {
 };
 
 const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) => {
-    console.log("update transaction error :  ", err);
+    //console.log("update transaction error :  ", err);
     const merchantId = merchantDetails.merchantId;
     const amount = merchantDetails.amount;
     let dataPath = path.join(__dirname, '../data');
     dataPath  += "/codeMap.json";
-    Transaction.findOne({$and:[{merchantId : merchantId},{cardId:merchantDetails.cardId}]}, (transactionErr, transactionRes) => {
+    Transaction.findOne({$and:[{merchantId : merchantId},{cardId:merchantDetails.cardId},{amount:amount}]}, (transactionErr, transactionRes) => {
         if (transactionErr) return callback(err);
-        if (transactionRes) {
+        if (transactionRes && creditCard && creditCard.cardId) {
             fs.readFile(dataPath, 'utf-8', (fsErr, fsRes) => {
                 if (fsErr) return callback(fsErr)
                 if (fsRes) {
@@ -127,7 +127,6 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                         if (cerr) {
                             wcb(cerr);
                         } else {
-                            console.log("card response : ", cres);
                             wcb (null, cres._id);
                         }
                     })
@@ -142,7 +141,7 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
 
                     TransactionToSave.save((error, result) => {
                         if(error){
-                            wcb(error)
+                            wcb("ERROR_AMOUNT")
                         } else {
                             //call retry logic functionality
 
@@ -160,7 +159,7 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                                         customerOrSystemAction: fsRes[err.raw.code].customer_or_system_action,
                                         stripeErrorCode: err.raw.code
                                     };
-                                    Transaction.findOneAndUpdate({$and:[{merchantId: merchantId},{cardId:cardId}]}, {$set:dataToSet}, {upsert:true, lean: true, new: true}, (dbErr, dbRes) => {
+                                    Transaction.findOneAndUpdate({$and:[{merchantId: result._id},{cardId:cardId}, {amount:amount}]}, {$set:dataToSet}, {upsert:true, lean: true, new: true}, (dbErr, dbRes) => {
                                         wcb(dbErr, dbRes);
                                     });
 
@@ -197,7 +196,7 @@ exports.getTransactions = (req, res) => {
             }
         }
     ],(err, response) => {
-        console.log(response)
+        //console.log(response)
         if(err){
             return err
         }
@@ -230,7 +229,7 @@ exports.getTransactions = (req, res) => {
 
 exports.makePayment = (req, res, next) => {
     let name = req.body.name;
-    let merchantId = req.body.merchantId;
+    let merchantId = 'Merchant-123';
     stripe.tokens.create(
         {
             card: {
@@ -260,10 +259,15 @@ exports.makePayment = (req, res, next) => {
                         amount: req.body.amount,
                         cardId: req.body.cardId
                     };
-                    console.log("console error :  ", err);
+                    //console.log("console error :  ", err);
                     createAndUpdateTransaction(merchantDetails, err, creditCard, (terr, tres) => {
                         if (terr) {
+                            console.log("terr is : ", terr);
                             if (res) {
+                                if (terr === "ERROR_AMOUNT") {
+                                    err.raw.code = "ERROR_AMOUNT";
+                                    err.raw.message = "Kindly enter different amount.";
+                                }
                                 return res.send({
                                     data: err
                                 })
@@ -323,10 +327,15 @@ exports.makePayment = (req, res, next) => {
                                 amount: req.body.amount,
                                 cardId: req.body.cardId
                             };
-                            console.log("token error :  ", err);
+                            //console.log("token error :  ", err);
                             createAndUpdateTransaction(merchantDetails, err, creditCard, (terr, tres) => {
                                 if (terr) {
+                                    console.log("terr is : ", terr);
                                     if (res) {
+                                        if (terr === "ERROR_AMOUNT") {
+                                            err.raw.code = "ERROR_AMOUNT";
+                                            err.raw.message = "Kindly enter different amount.";
+                                        }
                                         return res.send({
                                             data: err
                                         })
@@ -431,7 +440,7 @@ const retryTransaction = (transactionId) => {
         (cardDetails, cb) => {
             //call stripe API for payment process
             this.makePayment(cardDetails, null, (err, res)=> {
-                console.log("after stripe payment: ", err, res);
+                //console.log("after stripe payment: ", err, res);
                 const dataToSet = {
                     reschedule:false
                 };
@@ -453,7 +462,7 @@ exports.scheduleCron = () => {
                 console.log("Error while fetching transaction");
             } else if (res) {
                 async.forEachOf(res, (value, key, callback) => {
-                    if (value && !value.reschedule && value.attempt <= value.maxAttemptCount) {
+                    if (value && !value.reschedule && value.attempt <= value.maxAttemptCount && !value.stripeSuccess) {
                         // need to update DB with boolean value
                         const dataToSet = {
                             reschedule:true
