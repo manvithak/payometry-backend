@@ -180,15 +180,13 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
 }
 
 exports.getTransactions = (req, res) => {
-    console.log(req.params)
-    let skip = req.params.skip
-    let limit = req.params.limit
-    console.log(skip, limit)
-    Transaction.countDocuments({}, (err, count) => {
+    let skip = Number(req.query.skip)
+    let limit = Number(req.query.limit)
+    Transaction.countDocuments({stripeErrorCode: {$exists: true}}, (err, count) => {
         if(err){
             return err
         }
-        console.log(count)
+        console.log(count, skip, limit)
         Transaction.aggregate([
             {
                 $lookup: {
@@ -205,6 +203,11 @@ exports.getTransactions = (req, res) => {
                     foreignField: 'merchantId',
                     as: 'reAttemptDetails'
                 }
+            },
+            {
+                $match: {stripeErrorCode: {
+                    $exists: true
+                }}
             },
             {
                 $skip: skip
@@ -227,7 +230,7 @@ exports.getTransactions = (req, res) => {
 
 exports.makePayment = (req, res, next) => {
     let name = req.body.name;
-    let merchantId = req.body.merchantId;
+    let merchantId = 'merchant-123'
     stripe.tokens.create(
         {
             card: {
