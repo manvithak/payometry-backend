@@ -35,6 +35,7 @@ const cardController = require('./controllers/card');
 const questionController = require('./controllers/question');
 const stripeController = require('./controllers/stripePayment');
 const answerController = require('./controllers/answer');
+const accountController = require('./controllers/account');
 
 /**
  * API keys and Passport configuration.
@@ -138,7 +139,9 @@ app.post('/add-question', questionController.addQuestion);
 app.post('/make-payment', stripeController.makePayment);
 app.get('/answers', answerController.getAnswers);
 app.put('/update-answer', answerController.updateAnswers);
-app.get('/transactions', stripeController.getTransactions);
+app.get('/transactions/:skip/:limit', stripeController.getTransactions);
+app.post('/save-account', accountController.saveAccount);
+app.get('/get-accounts', accountController.getAccounts);
 stripeController.scheduleCron();
 /**
  * API examples routes.

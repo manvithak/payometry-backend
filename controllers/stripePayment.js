@@ -142,6 +142,7 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                                 if (fsErr) return callback(fsErr)
                                 if (fsRes) {
                                     fsRes = JSON.parse(fsRes);
+                                    console.log(fsRes)
                                     let nextAttemptDay = randomIntFromInterval(fsRes[err.raw.code].minimum_days_between, fsRes[err.raw.code].maximum_days_between);
                                     const dataToSet = {
                                         maxAttemptCount: fsRes[err.raw.code].max_recycle_attempts,
@@ -170,53 +171,49 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
 }
 
 exports.getTransactions = (req, res) => {
-    Transaction.aggregate([
-        {
-            $lookup: {
-                from: 'cards',
-                localField: 'cardId',
-                foreignField: '_id',
-                as: 'cardDetails'
-            }
-        },
-        {
-            $lookup: {
-                from: 'reattempttransactions',
-                localField: '_id',
-                foreignField: 'merchantId',
-                as: 'reAttemptDetails'
-            }
-        }
-    ],(err, response) => {
-        console.log(response)
+    console.log(req.params)
+    let skip = req.params.skip
+    let limit = req.params.limit
+    console.log(skip, limit)
+    Transaction.countDocuments({}, (err, count) => {
         if(err){
             return err
         }
-        res.send({
-            data: response
+        console.log(count)
+        Transaction.aggregate([
+            {
+                $lookup: {
+                    from: 'cards',
+                    localField: 'cardId',
+                    foreignField: '_id',
+                    as: 'cardDetails'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'reattempttransactions',
+                    localField: '_id',
+                    foreignField: 'merchantId',
+                    as: 'reAttemptDetails'
+                }
+            },
+            {
+                $skip: skip
+            },
+            {
+                $limit: limit
+            }
+        ],(err, response) => {
+            console.log(response)
+            if(err){
+                return err
+            }
+            res.send({
+                data: response,
+                count: count
+            })
         })
     })
-    /*Transaction.find({}, (err, transactionData) => {
-        if(err){
-            return err
-        }else{
-            reTransactionIds = transactionData.map((transaction, index) => {
-                Card.find({id: transaction.card}, async(err, data) => {
-                    transaction.cardNum = data.cardNumber
-                })
-                return transaction;
-            })
-            console.log(reTransactionIds)
-            reAttemptTransaction.find({
-                'merchantId': { $in: reTransactionIds}
-            }, function(err, reAttemptData) {
-                transactionData.reApptemptData = reAttemptData;
-            });
-            res.send({
-                data: transactionData
-            })
-        }
-    })*/
 }
 
 exports.makePayment = (req, res, next) => {
