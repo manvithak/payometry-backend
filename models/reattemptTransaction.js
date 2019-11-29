@@ -5,7 +5,8 @@ const reAttemptTransactionSchema = new mongoose.Schema({
     stripeError:{type: String},
     attemptCount: {type:Number},
     responseCodeStatus: {type:String},
-    customerOrSystemAction: {type:String}
+    customerOrSystemAction: {type:String},
+    StripeSucces: {type: String}
 
 }, { timestamps: true });
 

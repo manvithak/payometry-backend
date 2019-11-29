@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const transactionSchema = new mongoose.Schema({
     merchantId: {type:String, required:true, index:true},
     stripeSuccess: {type: Boolean},
+    stripeSuccessResponse: {type:String},
     maximumDaysToFinalDisposition: {type: Number},
     cardId: {type:mongoose.Schema.ObjectId, ref: 'Card', required:true, index:true},
     attempt: {type: Number},
@@ -16,6 +17,5 @@ const transactionSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
-transactionSchema.index({'merchantId': 1, "cardId":1, "amount":1}, {unique:true});
 const transaction = mongoose.model('Transaction', transactionSchema);
 module.exports = transaction;

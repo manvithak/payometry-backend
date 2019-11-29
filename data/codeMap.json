@@ -244,7 +244,7 @@
     "max_recycle_attempts": 2,
     "minimum_days_between": 0,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1,
+    "maximum_days_to_final_disposition": 2,
     "customer_or_system_action": "The card’s security code is incorrect. Check the card’s security code or use a different card. Only for Real Time transactions, as you cannot store the card security code value."
   },
   "incorrect_number": {
@@ -260,7 +260,7 @@
     "max_recycle_attempts": 2,
     "minimum_days_between": 0,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1,
+    "maximum_days_to_final_disposition": 2,
     "customer_or_system_action": "The card’s ZIP code is incorrect. Check the card’s ZIP code or use a different card."
   },
   "instant_payouts_unsupported": {
@@ -292,7 +292,7 @@
     "max_recycle_attempts": 2,
     "minimum_days_between": 0,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1,
+    "maximum_days_to_final_disposition": 2,
     "customer_or_system_action": "The card’s security code is invalid. Check the card’s security code or use a different card. Only for Real Time transactions, as you cannot store the card security code value."
   },
   "invalid_expiry_month": {
@@ -304,11 +304,11 @@
     "customer_or_system_action": "The card’s expiration month is incorrect. Check the expiration date or use a different card."
   },
   "invalid_expiry_year": {
-    "response_code_status": "Exception",
-    "max_recycle_attempts": 2,
-    "minimum_days_between": 0,
-    "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1,
+    "response_code_status": "Soft Decline",
+    "max_recycle_attempts": 7,
+    "minimum_days_between": 3,
+    "maximum_days_between": 6,
+    "maximum_days_to_final_disposition": 21,
     "customer_or_system_action": "Upon  initial decline, resend the next authorization with a BLANK expire date. Thereafter, attempts should increase the Expire Date Year value (from what is currently loaded on the platform, with the following pattern: +3, +4, +2, +1, +5 & +6. Of note, if the subsequent response codes come back with something OTHER THAN EXPIRED CARD, then the platform should update the exire year value with the last known attempt value, as the estimate was correct but some other issue is causing the decline."
   },
   "invalid_number": {
@@ -316,7 +316,7 @@
     "max_recycle_attempts": 2,
     "minimum_days_between": 0,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1,
+    "maximum_days_to_final_disposition": 2,
     "customer_or_system_action": "The card number is invalid. Check the card details or use a different card."
   },
   "invalid_source_usage": {
@@ -708,7 +708,7 @@
     "max_recycle_attempts": 2,
     "minimum_days_between": 1,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1,
+    "maximum_days_to_final_disposition": 2,
     "customer_or_system_action": "Your account has not been activated and can only make test charges. Activate your account in the Dashboard to begin processing live charges."
   },
   "tls_version_unsupported": {
@@ -844,7 +844,7 @@
     "max_recycle_attempts": 2,
     "minimum_days_between": 0,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1,
+    "maximum_days_to_final_disposition": 2,
     "customer_or_system_action": "Do not report more detailed information to your customer. Instead, present as you would the generic_decline described below."
   },
   "insufficient_funds": {
@@ -876,7 +876,7 @@
     "max_recycle_attempts": 2,
     "minimum_days_between": 0,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1,
+    "maximum_days_to_final_disposition": 2,
     "customer_or_system_action": "The customer should try again using the correct PIN."
   },
   "issuer_not_available": {
@@ -908,7 +908,7 @@
     "max_recycle_attempts": 2,
     "minimum_days_between": 0,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1,
+    "maximum_days_to_final_disposition": 2,
     "customer_or_system_action": "If the amount appears to be correct, the customer needs to check with their card issuer that they can make purchases of that amount."
   },
   "no_action_taken": {
@@ -932,7 +932,7 @@
     "max_recycle_attempts": 2,
     "minimum_days_between": 0,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1,
+    "maximum_days_to_final_disposition": 2,
     "customer_or_system_action": "The customer should try again using the correct card number."
   },
   "online_or_offline_pin_required": {
@@ -940,7 +940,7 @@
     "max_recycle_attempts": 2,
     "minimum_days_between": 0,
     "maximum_days_between": 1,
-    "maximum_days_to_final_disposition": 1,
+    "maximum_days_to_final_disposition": 2,
     "customer_or_system_action": "The customer should try again using the correct PIN."
   },
   "pickup_card": {

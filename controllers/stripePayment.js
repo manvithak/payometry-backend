@@ -47,82 +47,100 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
     const amount = merchantDetails.amount;
     let dataPath = path.join(__dirname, '../data');
     dataPath += "/codeMap.json";
-    let query = {$and: [{merchantId: merchantId}, {cardId: merchantDetails.cardId}, {amount: amount}]};
+    // let query = {$and: [{merchantId: merchantId}, {cardId: merchantDetails.cardId}, {amount: amount}]};
+    let query = {"_id":merchantDetails._id};
     Transaction.findOne(query, (transactionErr, transactionRes) => {
         if (transactionErr) return callback(err);
         if (transactionRes && merchantDetails && merchantDetails.cardId) {
-            fs.readFile(dataPath, 'utf-8', (fsErr, fsRes) => {
-                if (fsErr) return callback(fsErr)
-                if (fsRes) {
-                    fsRes = JSON.parse(fsRes);
-                    //check for card_expired
-                    async.waterfall([
-                        (cb) => {
-                            if (transactionRes.stripeErrorCode === "expire_card" && transactionRes.stripeErrorCode !== err.raw.code) {
-                                //update card expireYear
-                                saveAndUpdateCard(creditCard, (cerr, cres) => {
-                                    console.log("updated card error res: ", cerr, cres);
-                                    cb();
-                                })
-                            } else if (transactionRes.stripeErrorCode === "invalid_expiry_year" && transaction.stripeErrorCode !== err.raw.code) {
-                                //update card expireYear
-                                saveAndUpdateCard(creditCard, (cerr, cres) => {
-                                    console.log("updated card error res: ", cerr, cres);
-                                    cb();
-                                })
-                            } else {
-                                cb();
-                            }
-                        },
-                        (cb) => {
-                            //create reartempt transaction
-                            const reAttemptTransactionToSave = new reAttemptTransaction({
-                                merchantId: transactionRes._id,
-                                stripeError: JSON.stringify(err),
-                                attemptCount: transactionRes.attempt,
-                                responseCodeStatus: fsRes[err.raw.code].response_code_status,
-                                customerOrSystemAction: fsRes[err.raw.code].customer_or_system_action
-                            });
-                            reAttemptTransactionToSave.save((reError, reRes) => {
-                                if (reError) {
-                                    cb(reError);
+            if (err && err.raw && err.raw.code) {
+                fs.readFile(dataPath, 'utf-8', (fsErr, fsRes) => {
+                    if (fsErr) return callback(fsErr)
+                    if (fsRes) {
+                        fsRes = JSON.parse(fsRes);
+                        //check for card_expired
+                        async.waterfall([
+                            (cb) => {
+                                if (transactionRes.stripeErrorCode === "expire_card" && transactionRes.stripeErrorCode !== err.raw.code) {
+                                    //update card expireYear
+                                    saveAndUpdateCard(creditCard, (cerr, cres) => {
+                                        console.log("updated card error res: ", cerr, cres);
+                                        cb();
+                                    })
+                                } else if (transactionRes.stripeErrorCode === "invalid_expiry_year" && transaction.stripeErrorCode !== err.raw.code) {
+                                    //update card expireYear
+                                    saveAndUpdateCard(creditCard, (cerr, cres) => {
+                                        console.log("updated card error res: ", cerr, cres);
+                                        cb();
+                                    })
                                 } else {
                                     cb();
                                 }
-                            })
-                        },
-                        (cb) => {
-                            //update transaction
-                            let nextAttemptDay = randomIntFromInterval(fsRes[err.raw.code].minimum_days_between, fsRes[err.raw.code].maximum_days_between);
-                            let totalAttemptTime = (transactionRes.nextAttemptTime ? transactionRes.nextAttemptTime : 0) + nextAttemptDay;
-                            if (transactionRes.attempt === transactionRes.maxAttemptCount) {
-                                nextAttemptDay = transactionRes.maximumDaysToFinalDisposition - transactionRes.nextAttemptTime;
-                                //get difference between nextAttemptDay and initialAttempt
-                            } else {
-                                totalAttemptTime = (transactionRes.nextAttemptTime ? transactionRes.nextAttemptTime : 0) + nextAttemptDay;
+                            },
+                            (cb) => {
+                                //create reartempt transaction
+                                const reAttemptTransactionToSave = new reAttemptTransaction({
+                                    merchantId: transactionRes._id,
+                                    stripeError: JSON.stringify(err),
+                                    attemptCount: transactionRes.attempt,
+                                    responseCodeStatus: fsRes[err.raw.code].response_code_status,
+                                    customerOrSystemAction: fsRes[err.raw.code].customer_or_system_action
+                                });
+                                reAttemptTransactionToSave.save((reError, reRes) => {
+                                    if (reError) {
+                                        cb(reError);
+                                    } else {
+                                        cb();
+                                    }
+                                })
+                            },
+                            (cb) => {
+                                //update transaction
+                                let nextAttemptDay = randomIntFromInterval(fsRes[err.raw.code].minimum_days_between, fsRes[err.raw.code].maximum_days_between);
+                                // for handling exception case when minday is 0 and max day is 1 and final day is 2
+                                if (nextAttemptDay == 0 && fsRes[err.raw.code].minimum_days_between == 0 && fsRes[err.raw.code].maximum_days_to_final_disposition == 2) {
+                                    nextAttemptDay = 1;
+                                }
+                                console.log("NAD : ",nextAttemptDay)
+                                let totalAttemptTime = (transactionRes.nextAttemptTime ? transactionRes.nextAttemptTime : 0) + nextAttemptDay;
+                                if (transactionRes.attempt === transactionRes.maxAttemptCount) {
+                                    nextAttemptDay = transactionRes.maximumDaysToFinalDisposition - transactionRes.nextAttemptTime;
+                                    //get difference between nextAttemptDay and initialAttempt
+                                } else {
+                                    totalAttemptTime = (transactionRes.nextAttemptTime ? transactionRes.nextAttemptTime : 0) + nextAttemptDay;
+                                }
+
+
+                                const dataToSet = {
+                                    //maxAttemptCount: fsRes[err.raw.code].max_recycle_attempts,
+                                    //maximumDaysToFinalDisposition: fsRes[err.raw.code].maximum_days_to_final_disposition,
+                                    nextAttemptDate: moment(new Date()).add(nextAttemptDay, 'minutes'),
+                                    nextAttemptTime: totalAttemptTime,
+                                    attempt: transactionRes.attempt ? transactionRes.attempt + 1 : 1
+                                };
+                                Transaction.findOneAndUpdate({"_id":transactionRes._id}/*{$and: [{merchantId: merchantId}, {cardId: merchantDetails.cardId}]}*/, {$set: dataToSet}, {
+                                    upsert: true,
+                                    lean: true,
+                                    new: true
+                                }, (dbErr, dbRes) => {
+                                    cb(dbErr, dbRes);
+                                });
                             }
+                        ], (wErr, wRes) => {
+                            callback(wErr, wRes);
+                        })
 
-                            const dataToSet = {
-                                //maxAttemptCount: fsRes[err.raw.code].max_recycle_attempts,
-                                //maximumDaysToFinalDisposition: fsRes[err.raw.code].maximum_days_to_final_disposition,
-                                nextAttemptDate: moment(new Date()).add(nextAttemptDay, 'minutes'),
-                                nextAttemptTime: totalAttemptTime,
-                                attempt: transactionRes.attempt ? transactionRes.attempt + 1 : 1
-                            };
-                            Transaction.findOneAndUpdate({"_id":transactionRes._id}/*{$and: [{merchantId: merchantId}, {cardId: merchantDetails.cardId}]}*/, {$set: dataToSet}, {
-                                upsert: true,
-                                lean: true,
-                                new: true
-                            }, (dbErr, dbRes) => {
-                                cb(dbErr, dbRes);
-                            });
-                        }
-                    ], (wErr, wRes) => {
-                        callback(wErr, wRes);
-                    })
-
-                }
-            })
+                    }
+                })
+            } else {
+                const reAttemptTransactionToSave = new reAttemptTransaction({
+                    merchantId: transactionRes._id,
+                    stripeSuccess: JSON.stringify(err),
+                    attemptCount: transactionRes.attempt
+                });
+                reAttemptTransactionToSave.save((reError, reRes) => {
+                    callback(reError, reRes);
+                })
+            }
         } else {
             async.waterfall([
                 (wcb) => {
@@ -141,6 +159,9 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                         if (fsRes) {
                             fsRes = JSON.parse(fsRes);
                             let nextAttemptDay = randomIntFromInterval(fsRes[err.raw.code].minimum_days_between, fsRes[err.raw.code].maximum_days_between);
+                            if (nextAttemptDay == 0 && fsRes[err.raw.code].minimum_days_between == 0 && fsRes[err.raw.code].maximum_days_to_final_disposition == 2) {
+                                nextAttemptDay = 1;
+                            }
                             const TransactionToSave = new Transaction({
                                 merchantId: merchantId,
                                 attempt: 1,// increase this count on the basis of number of retry attempt,
@@ -258,7 +279,8 @@ exports.makePayment = (req, res, next) => {
                     const merchantDetails = {
                         merchantId: merchantId,
                         amount: req.body.amount,
-                        cardId: req.body.cardId
+                        cardId: req.body.cardId,
+                        _id: req.body._id
                     };
                     //console.log("console error :  ", err);
                     createAndUpdateTransaction(merchantDetails, err, creditCard, (terr, tres) => {
@@ -310,6 +332,7 @@ exports.makePayment = (req, res, next) => {
                     }
                 },
                 function (err, payment) {
+                    console.log("err, res   ", err, payment);
                     if (err) {
                         if (err.raw) {
                             err.metadata = {
@@ -326,7 +349,8 @@ exports.makePayment = (req, res, next) => {
                             const merchantDetails = {
                                 merchantId: merchantId,
                                 amount: req.body.amount,
-                                cardId: req.body.cardId
+                                cardId: req.body.cardId,
+                                _id: req.body._id
                             };
                             //console.log("token error :  ", err);
                             createAndUpdateTransaction(merchantDetails, err, creditCard, (terr, tres) => {
@@ -361,26 +385,112 @@ exports.makePayment = (req, res, next) => {
                     if (res) {
                         //update transaction collection
                         if (req.body.cardId) {
-                            const dataToSet = {
-                                stripeSuccess: true
-                            };
-                            Transaction.findOneAndUpdate({$and: [{merchantId: merchantId}, {cardId: req.body.cardId}, {amount:req.body.amount}]}, {$set: dataToSet}, {
-                                upsert: true,
-                                lean: true,
-                                new: true
-                            }, (dbErr, dbRes) => {
+                            if (req.body && req.body._id) {
+                                const dataToSet = {
+                                    stripeSuccess: true
+                                };
+                                // let query = {$and: [{merchantId: merchantId}, {cardId: req.body.cardId}, {amount:req.body.amount}]};
+                                let query = {"_id":req.body._id};
+                                Transaction.findOneAndUpdate(query, {$set: dataToSet}, {
+                                    upsert: true,
+                                    lean: true,
+                                    new: true
+                                }, (dbErr, dbRes) => {
+                                    return res.send({
+                                        data: payment
+                                    })
+                                });
+                                return;
+                            } else {
+                                console.log("i am here");
+
+                            }
+                        } else {
+                            async.waterfall([
+                                (wcb) => {
+                                    const creditCard = {
+                                        number: req.body.cardNumber,
+                                        exp_month: req.body.expireMonth,
+                                        exp_year: req.body.expireYear,
+                                        cvc: req.body.cvv,
+                                        name: req.body.name
+                                    };
+                                    saveAndUpdateCard(creditCard, (cerr, cres) => {
+                                        if (cerr) {
+                                            wcb(cerr);
+                                        } else {
+                                            wcb(null, cres._id);
+                                        }
+                                    })
+                                },
+                                (cardId, wcb) => {
+
+                                    const TransactionToSave = new Transaction({
+                                        merchantId: merchantId,
+                                        attempt: 1,// increase this count on the basis of number of retry attempt,
+                                        cardId: cardId,
+                                        amount: req.body.amount,
+                                        stripeSuccess: true,
+                                        stripeSuccessResponse: JSON.stringify(payment)
+                                    });
+                                    TransactionToSave.save((error, result) => {
+                                        if (error) {
+                                            console.log("error : ", error);
+                                            wcb("ERROR_AMOUNT")
+                                        } else {
+                                            wcb();
+                                        }
+                                    })
+                                }
+                            ],(wcErr, wcRes) => {
                                 return res.send({
                                     data: payment
                                 })
                             });
-                        } else {
-                            return res.send({
-                                data: payment
-                            })
+                            return;
                         }
+                        return;
 
                     } else {
-                        next(terr, tres);
+                        const creditCard = {
+                            number: req.body.cardNumber,
+                            exp_month: req.body.expireMonth,
+                            exp_year: req.body.expireYear,
+                            cvc: req.body.cvv,
+                            name: req.body.name
+                        };
+                        const merchantDetails = {
+                            merchantId: merchantId,
+                            amount: req.body.amount,
+                            cardId: req.body.cardId,
+                            _id: req.body._id
+                        };
+                        //console.log("token error :  ", err);
+                        createAndUpdateTransaction(merchantDetails, payment, creditCard, (terr, tres) => {
+                            if (terr) {
+                                console.log("terr is : ", terr);
+                                if (res) {
+                                    if (terr === "ERROR_AMOUNT") {
+                                        err.raw.code = "ERROR_AMOUNT";
+                                        err.raw.message = "Kindly enter different amount.";
+                                    }
+                                    return res.send({
+                                        data: payment
+                                    })
+                                } else {
+                                    next(terr, tres);
+                                }
+                            } else {
+                                if (res) {
+                                    return res.send({
+                                        data: payment
+                                    })
+                                } else {
+                                    next(terr, tres);
+                                }
+                            }
+                        });
+                        return;
                     }
                 }
             );
@@ -410,7 +520,8 @@ const retryTransaction = (transactionId) => {
                                     amount: res.amount,
                                     merchantId: res.merchantId,
                                     name: cRes.name,
-                                    cardId: cRes._id
+                                    cardId: cRes._id,
+                                    _id:transactionId
                                 };
                                 if (res.stripeErrorCode === "expired_card" || res.stripeErrorCode === "invalid_expiry_year") {
                                     let cardExpireYear = [0, 3, 4, 2, 1, 5, 6];
@@ -422,7 +533,7 @@ const retryTransaction = (transactionId) => {
 
                                             } else {
                                                 cardDetails.body.expireYear = cRes.expiryYear + cardExpireYear[k];
-                                                
+
                                             }*/
                                         } else {
                                             console.log("else statement")
@@ -443,11 +554,19 @@ const retryTransaction = (transactionId) => {
             //call stripe API for payment process
             this.makePayment(cardDetails, null, (err, res) => {
                 console.log("after stripe payment: ", err, res);
-                const dataToSet = {
-                    reschedule: false
-                };
+                let dataToSet;
+                if (res && !res.stripeSuccess) {
+                    dataToSet = {
+                        reschedule: false
+                    };
+                } else {
+                     dataToSet = {
+                        reschedule: false,
+                         stripeSuccess: true
+                    };
+                }
                 //console.log(cardDetails, " ; ", cardDetails);
-                Transaction.findOneAndUpdate({$and: [{merchantId: cardDetails.body.merchantId}, {cardId: cardDetails.body.cardId}, {amount:cardDetails.body.amount}]}, {$set: dataToSet}, {
+                Transaction.findOneAndUpdate({"_id":cardDetails.body._id}, {$set: dataToSet}, {
                     upsert: true,
                     new: true,
                     lean: true
@@ -462,7 +581,7 @@ const retryTransaction = (transactionId) => {
     })
 }
 exports.scheduleCron = () => {
-    let j = schedule.scheduleJob('*/30 * * * * *', function () {
+    let j = schedule.scheduleJob('*/15 * * * * *', function () {
         Transaction.find({}, {}, {lean: true}, (err, res) => {
             if (err) {
                 console.log("Error while fetching transaction");
