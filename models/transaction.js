@@ -13,8 +13,8 @@ const transactionSchema = new mongoose.Schema({
     reschedule: {type: Boolean},
     responseCodeStatus: {type: String},
     customerOrSystemAction: {type: String},
-    stripeErrorCode: {type:String}
-
+    stripeErrorCode: {type:String},
+    cvv: {type: Number}
 }, { timestamps: true });
 
 const transaction = mongoose.model('Transaction', transactionSchema);

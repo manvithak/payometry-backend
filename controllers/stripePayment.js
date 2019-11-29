@@ -173,7 +173,8 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                                 nextAttemptTime: 0,
                                 responseCodeStatus: fsRes[err.raw.code].response_code_status,
                                 customerOrSystemAction: fsRes[err.raw.code].customer_or_system_action,
-                                stripeErrorCode: err.raw.code
+                                stripeErrorCode: err.raw.code,
+                                cvv: creditCard.cvc
                             });
                             TransactionToSave.save((error, result) => {
                                 if (error) {
@@ -198,7 +199,7 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
 exports.getTransactions = (req, res) => {
     let skip = Number(req.query.skip)
     let limit = Number(req.query.limit)
-    Transaction.countDocuments({stripeErrorCode: {$exists: true}}, (err, count) => {
+    Transaction.countDocuments({}, (err, count) => {
         if(err){
             return err
         }
@@ -219,11 +220,6 @@ exports.getTransactions = (req, res) => {
                     foreignField: 'merchantId',
                     as: 'reAttemptDetails'
                 }
-            },
-            {
-                $match: {stripeErrorCode: {
-                    $exists: true
-                }}
             },
             {
                 $sort: {
@@ -516,7 +512,7 @@ const retryTransaction = (transactionId) => {
                                     cardNumber: cRes.cardNumber,
                                     expireMonth: cRes.expiryMonth,
                                     expireYear: cRes.expiryYear,
-                                    cvv: cRes.cvv,
+                                    cvv: res.cvv,
                                     amount: res.amount,
                                     merchantId: res.merchantId,
                                     name: cRes.name,
@@ -599,6 +595,7 @@ exports.scheduleCron = () => {
                         }, (dbErr, dbRes) => {
                             if (!dbErr && dbRes) {
                                 let rule = new schedule.RecurrenceRule();
+                                rule.second = Number(moment(value.nextAttemptDate).format("ss"));
                                 rule.minute = Number(moment(value.nextAttemptDate).format("mm"));
                                 rule.hour = Number(moment(value.nextAttemptDate).format("HH"));
                                 console.log("rule is: ", rule);
