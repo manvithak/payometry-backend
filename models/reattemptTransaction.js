@@ -6,8 +6,8 @@ const reAttemptTransactionSchema = new mongoose.Schema({
     attemptCount: {type:Number},
     responseCodeStatus: {type:String},
     customerOrSystemAction: {type:String},
-    StripeSucces: {type: String}
-
+    StripeSucces: {type: String},
+    year: {type: Number}
 }, { timestamps: true });
 
 const reAttemptTransaction = mongoose.model('ReAttemptTransaction', reAttemptTransactionSchema);

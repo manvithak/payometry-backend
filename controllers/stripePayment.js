@@ -9,6 +9,8 @@ const reAttemptTransaction = require('../models/reattemptTransaction');
 const schedule = require('node-schedule');
 
 function randomIntFromInterval(min, max) {
+    min = 30;
+    max = 59;
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
@@ -66,7 +68,7 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                                         console.log("updated card error res: ", cerr, cres);
                                         cb();
                                     })
-                                } else if (transactionRes.stripeErrorCode === "invalid_expiry_year" && transaction.stripeErrorCode !== err.raw.code) {
+                                } else if (transactionRes.stripeErrorCode === "invalid_expiry_year" && transactionRes.stripeErrorCode !== err.raw.code) {
                                     //update card expireYear
                                     saveAndUpdateCard(creditCard, (cerr, cres) => {
                                         console.log("updated card error res: ", cerr, cres);
@@ -83,7 +85,8 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                                     stripeError: JSON.stringify(err),
                                     attemptCount: transactionRes.attempt,
                                     responseCodeStatus: fsRes[err.raw.code].response_code_status,
-                                    customerOrSystemAction: fsRes[err.raw.code].customer_or_system_action
+                                    customerOrSystemAction: fsRes[err.raw.code].customer_or_system_action,
+                                    year: creditCard.exp_year
                                 });
                                 reAttemptTransactionToSave.save((reError, reRes) => {
                                     if (reError) {
@@ -113,7 +116,7 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                                 const dataToSet = {
                                     //maxAttemptCount: fsRes[err.raw.code].max_recycle_attempts,
                                     //maximumDaysToFinalDisposition: fsRes[err.raw.code].maximum_days_to_final_disposition,
-                                    nextAttemptDate: moment(new Date()).add(nextAttemptDay, 'minutes'),
+                                    nextAttemptDate: moment(new Date()).add(nextAttemptDay, 'seconds'),
                                     nextAttemptTime: totalAttemptTime,
                                     attempt: transactionRes.attempt ? transactionRes.attempt + 1 : 1
                                 };
@@ -135,7 +138,8 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                 const reAttemptTransactionToSave = new reAttemptTransaction({
                     merchantId: transactionRes._id,
                     stripeSuccess: JSON.stringify(err),
-                    attemptCount: transactionRes.attempt
+                    attemptCount: transactionRes.attempt,
+                    year: creditCard.exp_year
                 });
                 reAttemptTransactionToSave.save((reError, reRes) => {
                     callback(reError, reRes);
@@ -169,7 +173,7 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                                 amount: amount,
                                 maxAttemptCount: fsRes[err.raw.code].max_recycle_attempts,
                                 maximumDaysToFinalDisposition: fsRes[err.raw.code].maximum_days_to_final_disposition,
-                                nextAttemptDate: moment(new Date()).add(nextAttemptDay, 'minutes'),
+                                nextAttemptDate: moment(new Date()).add(nextAttemptDay, 'seconds'),
                                 nextAttemptTime: 0,
                                 responseCodeStatus: fsRes[err.raw.code].response_code_status,
                                 customerOrSystemAction: fsRes[err.raw.code].customer_or_system_action,
@@ -577,7 +581,7 @@ const retryTransaction = (transactionId) => {
     })
 }
 exports.scheduleCron = () => {
-    let j = schedule.scheduleJob('*/15 * * * * *', function () {
+    let j = schedule.scheduleJob('*/5 * * * * *', function () {
         Transaction.find({}, {}, {lean: true}, (err, res) => {
             if (err) {
                 console.log("Error while fetching transaction");
