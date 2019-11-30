@@ -249,10 +249,19 @@ exports.getTransactionCounts = (req, res) => {
                 return err
             }
             Transaction.count({$where : "this.attempt === this.maxAttemptCount+1 && !this.stripeSuccess"}, (err, failureCount) => {
-                return res.send({
-                    complete: completedCount,
-                    success: successCount,
-                    failure: failureCount
+                if(err){
+                    return err
+                }
+                Transaction.count({$where: "this.stripeSuccessResponse"}, (err, stripeCount) => {
+                    if(err){
+                        return err
+                    }
+                    return res.send({
+                        complete: completedCount,
+                        success: successCount,
+                        failure: failureCount,
+                        stripe: stripeCount 
+                    })
                 })
             })
         })
