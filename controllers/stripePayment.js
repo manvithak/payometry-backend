@@ -493,7 +493,6 @@ exports.makePayment = (req, res, next) => {
                                         }
                                     }
                                 });
-                                return;
                             } else {
                                 console.log("i am here");
 
@@ -524,7 +523,9 @@ exports.makePayment = (req, res, next) => {
                                         cardId: cardId,
                                         amount: req.body.amount,
                                         stripeSuccess: true,
-                                        stripeSuccessResponse: JSON.stringify(payment)
+                                        stripeSuccessResponse: JSON.stringify(payment),
+                                        accountId: req.body.accountId,
+                                        stripeMessage: payment.status
                                     });
                                     TransactionToSave.save((error, result) => {
                                         if (error) {
@@ -542,7 +543,6 @@ exports.makePayment = (req, res, next) => {
                             });
                             return;
                         }
-                        return;
 
                     } else {
                         const creditCard = {
@@ -584,7 +584,6 @@ exports.makePayment = (req, res, next) => {
                                 }
                             }
                         });
-                        return;
                     }
                 }
             );
