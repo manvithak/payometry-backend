@@ -66,13 +66,11 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                                 if (transactionRes.stripeErrorCode === "expire_card" && transactionRes.stripeErrorCode !== err.raw.code) {
                                     //update card expireYear
                                     saveAndUpdateCard(creditCard, (cerr, cres) => {
-                                        console.log("updated card error res: ", cerr, cres);
-                                        cb(null, "saveCard");
+                                         cb(null, "saveCard");
                                     })
                                 } else if (transactionRes.stripeErrorCode === "invalid_expiry_year" && transactionRes.stripeErrorCode !== err.raw.code) {
                                     //update card expireYear
                                     saveAndUpdateCard(creditCard, (cerr, cres) => {
-                                        console.log("updated card error res: ", cerr, cres);
                                         cb(null, "saveCard");
                                     })
                                 } else {
@@ -83,8 +81,7 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                                 if (arg) {
                                     //updateAccount expireYear
                                     Account.findOneAndUpdate({"_id":merchantDetails.accountId}, {$set:{expireYear: creditCard.exp_year}}, {lean:true}, (aErr, aRes) => {
-                                        console.log("Account error : ", aErr, aRes);
-                                        if (aErr) {
+                                       if (aErr) {
                                             cb(aErr);
                                         } else {
                                             cb();
@@ -119,8 +116,7 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                                 if (nextAttemptDay == 0 && fsRes[err.raw.code].minimum_days_between == 0 && fsRes[err.raw.code].maximum_days_to_final_disposition == 2) {
                                     nextAttemptDay = 1;
                                 }
-                                console.log("NAD : ",nextAttemptDay)
-                                let totalAttemptTime = (transactionRes.nextAttemptTime ? transactionRes.nextAttemptTime : 0) + nextAttemptDay;
+                               let totalAttemptTime = (transactionRes.nextAttemptTime ? transactionRes.nextAttemptTime : 0) + nextAttemptDay;
                                 if (transactionRes.attempt === transactionRes.maxAttemptCount) {
                                     nextAttemptDay = transactionRes.maximumDaysToFinalDisposition - transactionRes.nextAttemptTime;
                                     //get difference between nextAttemptDay and initialAttempt
@@ -168,7 +164,6 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                     (cb) => {
                         //update save Card
                         saveAndUpdateCard(creditCard, (cerr, cres) => {
-                            console.log("updated card error res: ", cerr, cres);
                             if (cerr) cb(cerr);
                             else cb();
                         })
@@ -176,7 +171,6 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                     (cb) => {
                         //update Account
                         Account.findOneAndUpdate({"_id":merchantDetails.accountId}, {$set:{expireYear: creditCard.exp_year}}, {lean:true}, (aErr, aRes) => {
-                            console.log("Account error : ", aErr, aRes);
                             if (aErr) {
                                 cb(aErr);
                             } else {
@@ -223,11 +217,11 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                                 stripeErrorCode: err.raw.code,
                                 cvv: creditCard.cvc,
                                 accountId: merchantDetails.accountId,
-                                stripeMessage: err.raw.message
+                                stripeMessage: err.raw.message,
+                                initialYear: creditCard.exp_year
                             });
                             TransactionToSave.save((error, result) => {
                                 if (error) {
-                                    console.log("error : ", error);
                                     wcb("ERROR_AMOUNT")
                                 } else {
                                     wcb();
@@ -272,7 +266,7 @@ exports.getTransactions = (req, res) => {
         if(err){
             return err
         }
-        console.log(count, skip, limit)
+        //console.log(count, skip, limit)
         Transaction.aggregate([
             {
                 $lookup: {
@@ -302,7 +296,7 @@ exports.getTransactions = (req, res) => {
                 $limit: limit
             }
         ],(err, response) => {
-            console.log(response)
+            //console.log(response)
             if(err){
                 return err
             }
@@ -315,7 +309,6 @@ exports.getTransactions = (req, res) => {
 }
 
 exports.makePayment = (req, res, next) => {
-    req.body.accountId = "5de0ea991ec81a0006f3b6b3";
     let name = req.body.name;
     let merchantId = 'Merchant-123';
     stripe.tokens.create(
@@ -328,6 +321,7 @@ exports.makePayment = (req, res, next) => {
             },
         },
         function (err, token) {
+            console.log("error res: ", err, token)
             if (err) {
                 if (err.raw) {
                     err.metadata = {
@@ -352,7 +346,7 @@ exports.makePayment = (req, res, next) => {
                     //console.log("console error :  ", err);
                     createAndUpdateTransaction(merchantDetails, err, creditCard, (terr, tres) => {
                         if (terr) {
-                            console.log("terr is : ", terr);
+                            //console.log("terr is : ", terr);
                             if (res) {
                                 if (terr === "ERROR_AMOUNT") {
                                     err.raw.code = "ERROR_AMOUNT";
@@ -423,7 +417,7 @@ exports.makePayment = (req, res, next) => {
                             //console.log("token error :  ", err);
                             createAndUpdateTransaction(merchantDetails, err, creditCard, (terr, tres) => {
                                 if (terr) {
-                                    console.log("terr is : ", terr);
+                                    //console.log("terr is : ", terr);
                                     if (res) {
                                         if (terr === "ERROR_AMOUNT") {
                                             err.raw.code = "ERROR_AMOUNT";
@@ -471,7 +465,7 @@ exports.makePayment = (req, res, next) => {
                                 };
                                 createAndUpdateTransaction(merchantDetails, payment, creditCard, (terr, tres) => {
                                     if (terr) {
-                                        console.log("terr is : ", terr);
+                                        //console.log("terr is : ", terr);
                                         if (res) {
                                             if (terr === "ERROR_AMOUNT") {
                                                 err.raw.code = "ERROR_AMOUNT";
@@ -494,7 +488,7 @@ exports.makePayment = (req, res, next) => {
                                     }
                                 });
                             } else {
-                                console.log("i am here");
+                                //console.log("i am here");
 
                             }
                         } else {
@@ -529,7 +523,7 @@ exports.makePayment = (req, res, next) => {
                                     });
                                     TransactionToSave.save((error, result) => {
                                         if (error) {
-                                            console.log("error : ", error);
+                                            //.log("error : ", error);
                                             wcb("ERROR_AMOUNT")
                                         } else {
                                             wcb();
@@ -562,7 +556,7 @@ exports.makePayment = (req, res, next) => {
                         //console.log("token error :  ", err);
                         createAndUpdateTransaction(merchantDetails, payment, creditCard, (terr, tres) => {
                             if (terr) {
-                                console.log("terr is : ", terr);
+                                //console.log("terr is : ", terr);
                                 if (res) {
                                     if (terr === "ERROR_AMOUNT") {
                                         err.raw.code = "ERROR_AMOUNT";
@@ -618,19 +612,20 @@ const retryTransaction = (transactionId) => {
                                     accountId: res.accountId
                                 };
                                 if (res.stripeErrorCode === "expired_card" || res.stripeErrorCode === "invalid_expiry_year") {
-                                    let cardExpireYear = [0, 3, 4, 2, 1, 5, 6];
+                                    let cardExpireYear = ["", 3, 4, 2, 1, 5, 6];
                                     for (let k in cardExpireYear) {
                                         if ((res.attempt - 1) == k) {
-                                            cardDetails.body.expireYear = cRes.expiryYear + cardExpireYear[k];
-                                            /*if (cardExpireYear[k] === 0) {
+                                            //cardDetails.body.expireYear = cRes.expiryYear + cardExpireYear[k];
+                                            if (cardExpireYear[k] == 0) {
+                                                console.log("inside 1st attempt");
                                                 cardDetails.body.expireYear = "";
 
                                             } else {
                                                 cardDetails.body.expireYear = cRes.expiryYear + cardExpireYear[k];
 
-                                            }*/
+                                            }
                                         } else {
-                                            console.log("else statement")
+                                            //console.log("else statement")
                                         }
                                     }
                                 }
