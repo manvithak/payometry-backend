@@ -245,6 +245,26 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
     });
 }
 
+exports.getTransactionCounts = (req, res) => {
+    Transaction.count({$where : "this.attempt === this.maxAttemptCount+1 || this.stripeSuccess"}, (err, completedCount) => {
+        if(err){
+            return err
+        }
+        Transaction.count({$where : "this.stripeSuccess"}, (err, successCount) => {
+            if(err){
+                return err
+            }
+            Transaction.count({$where : "this.attempt === this.maxAttemptCount+1 && !this.stripeSuccess"}, (err, failureCount) => {
+                return res.send({
+                    complete: completedCount,
+                    success: successCount,
+                    failure: failureCount
+                })
+            })
+        })
+    })
+}
+
 exports.getTransactions = (req, res) => {
     let skip = Number(req.query.skip)
     let limit = Number(req.query.limit)

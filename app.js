@@ -140,6 +140,7 @@ app.post('/make-payment', stripeController.makePayment);
 app.get('/answers', answerController.getAnswers);
 app.put('/update-answer', answerController.updateAnswers);
 app.get('/transactions', stripeController.getTransactions);
+app.get('/transaction-counts', stripeController.getTransactionCounts);
 app.post('/save-account', accountController.saveAccount);
 app.get('/get-accounts', accountController.getAccounts);
 stripeController.scheduleCron();
