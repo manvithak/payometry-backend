@@ -82,7 +82,8 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                             (arg, cb) => {
                                 if (arg) {
                                     //updateAccount expireYear
-                                    Account.findOneAndUpdate({"_id":merchantDetails.accountId}, {$set:{expireYear: creditCard.exp_year}}, {lean:true}, (aErr, aRes) => {
+                                    console.log(merchantDetails, cardDetails)
+                                    Account.findOneAndUpdate({"_id":merchantDetails.accountId}, {$set:{expireYear: cardDetails.exp_year}}, {lean:true}, (aErr, aRes) => {
                                         console.log("Account error : ", aErr, aRes);
                                         if (aErr) {
                                             cb(aErr);
@@ -151,41 +152,14 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                     }
                 })
             } else {
-                async.waterfall([
-                    (cb) => {
-                        //create reaatempt transaction
-                        const reAttemptTransactionToSave = new reAttemptTransaction({
-                            merchantId: transactionRes._id,
-                            stripeSuccess: JSON.stringify(err),
-                            attemptCount: transactionRes.attempt,
-                            year: creditCard.exp_year
-                        });
-                        reAttemptTransactionToSave.save((reError, reRes) => {
-                            if (reError) cb(reError);
-                            else cb();
-                        })
-                    },
-                    (cb) => {
-                        //update save Card
-                        saveAndUpdateCard(creditCard, (cerr, cres) => {
-                            console.log("updated card error res: ", cerr, cres);
-                            if (cerr) cb(cerr);
-                            else cb();
-                        })
-                    },
-                    (cb) => {
-                        //update Account
-                        Account.findOneAndUpdate({"_id":merchantDetails.accountId}, {$set:{expireYear: creditCard.exp_year}}, {lean:true}, (aErr, aRes) => {
-                            console.log("Account error : ", aErr, aRes);
-                            if (aErr) {
-                                cb(aErr);
-                            } else {
-                                cb();
-                            }
-                        })
-                    }
-                ], (wcErr, wcRes) => {
-                    callback(wcErr, wcRes);
+                const reAttemptTransactionToSave = new reAttemptTransaction({
+                    merchantId: transactionRes._id,
+                    stripeSuccess: JSON.stringify(err),
+                    attemptCount: transactionRes.attempt,
+                    year: creditCard.exp_year
+                });
+                reAttemptTransactionToSave.save((reError, reRes) => {
+                    callback(reError, reRes);
                 })
             }
         } else {
@@ -222,8 +196,7 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                                 customerOrSystemAction: fsRes[err.raw.code].customer_or_system_action,
                                 stripeErrorCode: err.raw.code,
                                 cvv: creditCard.cvc,
-                                accountId: merchantDetails.accountId,
-                                stripeMessage: err.raw.message
+                                accountId: merchantDetails.accountId
                             });
                             TransactionToSave.save((error, result) => {
                                 if (error) {
@@ -243,6 +216,26 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
 
         }
     });
+}
+
+exports.getTransactionCounts = (req, res) => {
+    Transaction.count({$where : "this.attempt === this.maxAttemptCount+1 || this.stripeSuccess"}, (err, completedCount) => {
+        if(err){
+            return err
+        }
+        Transaction.count({$where : "this.stripeSuccess"}, (err, successCount) => {
+            if(err){
+                return err
+            }
+            Transaction.count({$where : "this.attempt === this.maxAttemptCount+1 && !this.stripeSuccess"}, (err, failureCount) => {
+                return res.send({
+                    complete: completedCount,
+                    success: successCount,
+                    failure: failureCount
+                })
+            })
+        })
+    })
 }
 
 exports.getTransactions = (req, res) => {
@@ -295,7 +288,6 @@ exports.getTransactions = (req, res) => {
 }
 
 exports.makePayment = (req, res, next) => {
-    req.body.accountId = "5de0ea991ec81a0006f3b6b3";
     let name = req.body.name;
     let merchantId = 'Merchant-123';
     stripe.tokens.create(
@@ -434,44 +426,19 @@ exports.makePayment = (req, res, next) => {
                         //update transaction collection
                         if (req.body.cardId) {
                             if (req.body && req.body._id) {
-
-                                const creditCard = {
-                                    number: req.body.cardNumber,
-                                    exp_month: req.body.expireMonth,
-                                    exp_year: req.body.expireYear,
-                                    cvc: req.body.cvv,
-                                    name: req.body.name
+                                const dataToSet = {
+                                    stripeSuccess: true
                                 };
-                                const merchantDetails = {
-                                    merchantId: merchantId,
-                                    amount: req.body.amount,
-                                    cardId: req.body.cardId,
-                                    _id: req.body._id,
-                                    accountId: req.body.accountId
-                                };
-                                createAndUpdateTransaction(merchantDetails, payment, creditCard, (terr, tres) => {
-                                    if (terr) {
-                                        console.log("terr is : ", terr);
-                                        if (res) {
-                                            if (terr === "ERROR_AMOUNT") {
-                                                err.raw.code = "ERROR_AMOUNT";
-                                                err.raw.message = "Kindly enter different amount.";
-                                            }
-                                            return res.send({
-                                                data: payment
-                                            })
-                                        } else {
-                                            next(terr, tres);
-                                        }
-                                    } else {
-                                        if (res) {
-                                            return res.send({
-                                                data: payment
-                                            })
-                                        } else {
-                                            next(terr, tres);
-                                        }
-                                    }
+                                // let query = {$and: [{merchantId: merchantId}, {cardId: req.body.cardId}, {amount:req.body.amount}]};
+                                let query = {"_id":req.body._id};
+                                Transaction.findOneAndUpdate(query, {$set: dataToSet}, {
+                                    upsert: true,
+                                    lean: true,
+                                    new: true
+                                }, (dbErr, dbRes) => {
+                                    return res.send({
+                                        data: payment
+                                    })
                                 });
                                 return;
                             } else {
