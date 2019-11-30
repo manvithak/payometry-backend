@@ -63,7 +63,7 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                         //check for card_expired
                         async.waterfall([
                             (cb) => {
-                                if (transactionRes.stripeErrorCode === "expire_card" && transactionRes.stripeErrorCode !== err.raw.code) {
+                                /*if (transactionRes.stripeErrorCode === "expire_card" && transactionRes.stripeErrorCode !== err.raw.code) {
                                     //update card expireYear
                                     saveAndUpdateCard(creditCard, (cerr, cres) => {
                                          cb(null, "saveCard");
@@ -74,8 +74,9 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                                         cb(null, "saveCard");
                                     })
                                 } else {
-                                    cb(null, null);
-                                }
+                                    
+                                }*/
+                                cb(null, null);
                             },
                             (arg, cb) => {
                                 if (arg) {
@@ -161,13 +162,13 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                             else cb();
                         })
                     },
-                    (cb) => {
+                    /*(cb) => {
                         //update save Card
                         saveAndUpdateCard(creditCard, (cerr, cres) => {
                             if (cerr) cb(cerr);
                             else cb();
                         })
-                    },
+                    },*/
                     (cb) => {
                         //update Account
                         Account.findOneAndUpdate({"_id":merchantDetails.accountId}, {$set:{expireYear: creditCard.exp_year}}, {lean:true}, (aErr, aRes) => {
