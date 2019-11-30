@@ -6,6 +6,7 @@ const moment = require('moment');
 const Transaction = require('../models/transaction');
 const Card = require('../models/Card');
 const reAttemptTransaction = require('../models/reattemptTransaction');
+const Account = require('../models/Account');
 const schedule = require('node-schedule');
 
 function randomIntFromInterval(min, max) {
@@ -66,15 +67,30 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                                     //update card expireYear
                                     saveAndUpdateCard(creditCard, (cerr, cres) => {
                                         console.log("updated card error res: ", cerr, cres);
-                                        cb();
+                                        cb(null, "saveCard");
                                     })
                                 } else if (transactionRes.stripeErrorCode === "invalid_expiry_year" && transactionRes.stripeErrorCode !== err.raw.code) {
                                     //update card expireYear
                                     saveAndUpdateCard(creditCard, (cerr, cres) => {
                                         console.log("updated card error res: ", cerr, cres);
-                                        cb();
+                                        cb(null, "saveCard");
                                     })
                                 } else {
+                                    cb(null, null);
+                                }
+                            },
+                            (arg, cb) => {
+                                if (arg) {
+                                    //updateAccount expireYear
+                                    Account.findOneAndUpdate({"_id":merchantDetails.accountId}, {$set:{expireYear: cardDetails.exp_year}}, {lean:true}, (aErr, aRes) => {
+                                        console.log("Account error : ", aErr, aRes);
+                                        if (aErr) {
+                                            cb(aErr);
+                                        } else {
+                                            cb();
+                                        }
+                                    })
+                                 } else {
                                     cb();
                                 }
                             },
@@ -178,7 +194,8 @@ const createAndUpdateTransaction = (merchantDetails, err, creditCard, callback) 
                                 responseCodeStatus: fsRes[err.raw.code].response_code_status,
                                 customerOrSystemAction: fsRes[err.raw.code].customer_or_system_action,
                                 stripeErrorCode: err.raw.code,
-                                cvv: creditCard.cvc
+                                cvv: creditCard.cvc,
+                                accountId: merchantDetails.accountId
                             });
                             TransactionToSave.save((error, result) => {
                                 if (error) {
@@ -280,7 +297,8 @@ exports.makePayment = (req, res, next) => {
                         merchantId: merchantId,
                         amount: req.body.amount,
                         cardId: req.body.cardId,
-                        _id: req.body._id
+                        _id: req.body._id,
+                        accountId: req.body.accountId
                     };
                     //console.log("console error :  ", err);
                     createAndUpdateTransaction(merchantDetails, err, creditCard, (terr, tres) => {
@@ -350,7 +368,8 @@ exports.makePayment = (req, res, next) => {
                                 merchantId: merchantId,
                                 amount: req.body.amount,
                                 cardId: req.body.cardId,
-                                _id: req.body._id
+                                _id: req.body._id,
+                                accountId: req.body.accountId
                             };
                             //console.log("token error :  ", err);
                             createAndUpdateTransaction(merchantDetails, err, creditCard, (terr, tres) => {
@@ -463,7 +482,8 @@ exports.makePayment = (req, res, next) => {
                             merchantId: merchantId,
                             amount: req.body.amount,
                             cardId: req.body.cardId,
-                            _id: req.body._id
+                            _id: req.body._id,
+                            accountId: req.body.accountId
                         };
                         //console.log("token error :  ", err);
                         createAndUpdateTransaction(merchantDetails, payment, creditCard, (terr, tres) => {
@@ -521,7 +541,8 @@ const retryTransaction = (transactionId) => {
                                     merchantId: res.merchantId,
                                     name: cRes.name,
                                     cardId: cRes._id,
-                                    _id:transactionId
+                                    _id:transactionId,
+                                    accountId: res.accountId
                                 };
                                 if (res.stripeErrorCode === "expired_card" || res.stripeErrorCode === "invalid_expiry_year") {
                                     let cardExpireYear = [0, 3, 4, 2, 1, 5, 6];

@@ -14,7 +14,8 @@ const transactionSchema = new mongoose.Schema({
     responseCodeStatus: {type: String},
     customerOrSystemAction: {type: String},
     stripeErrorCode: {type:String},
-    cvv: {type: Number}
+    cvv: {type: Number},
+    accountId: {type:mongoose.Schema.ObjectId, ref:'Account', required:true}
 }, { timestamps: true });
 
 const transaction = mongoose.model('Transaction', transactionSchema);
