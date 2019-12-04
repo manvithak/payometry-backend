@@ -1,8 +1,9 @@
 const Answer = require('../models/Answer');
+const random_name = require('node-random-name');
 
 exports.saveAnswers = (req, res) => {
 	let answers = req.body.answers
-	let merchantId = Math.random().toString(36).substring(7);
+	let merchantId = random_name();
 	const answerToSave = new Answer({
 	  answers: answers,
 	  merchantId: merchantId
